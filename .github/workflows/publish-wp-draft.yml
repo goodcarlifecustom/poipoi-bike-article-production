@@ -1,10 +1,10 @@
-name: Publish WordPress Draft
+name: Create WordPress Draft
 
 on:
   workflow_dispatch:
     inputs:
       article_path:
-        description: HTML or Markdown file to publish as a WordPress draft
+        description: HTML or Markdown file to create as a WordPress draft
         required: true
         default: public/yyc-sefure.html
 
@@ -13,7 +13,7 @@ defaults:
     shell: bash
 
 jobs:
-  publish-draft:
+  create-draft:
     runs-on: ubuntu-latest
     env:
       WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
