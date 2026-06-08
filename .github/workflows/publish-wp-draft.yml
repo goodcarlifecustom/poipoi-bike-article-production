@@ -7,9 +7,6 @@ on:
         description: HTML or Markdown file to create as a WordPress draft
         required: true
         default: public/yyc-sefure.html
-  push:
-    paths:
-      - .github/wp-draft-trigger.txt
 
 defaults:
   run:
