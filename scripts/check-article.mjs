@@ -41,7 +41,7 @@ if (!slug) {
 }
 const dir = path.join('articles', slug);
 await mkdir(dir, { recursive: true });
-const required = ['input.yml', 'serp.md', 'outline.md', 'draft.md', 'article.html', 'article-linked.html', 'article-decorated.html', 'external-links.md'];
+const required = ['input.yml', 'serp.md', 'heading-plan.md', 'draft.md', 'article.html', 'article-linked.html', 'article-decorated.html', 'external-links.md'];
 const results = [];
 let ok = true;
 async function fail(message, action) { ok = false; results.push(`- NG: ${message}\n  - 次アクション: ${action}`); }
