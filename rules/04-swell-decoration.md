@@ -2,7 +2,7 @@
 
 ## 目的
 
-WordPressテーマSWELLで読みやすい本文HTMLを作成する。入力は `article-linked.html`、出力は `article-decorated.html` とする。
+バイク買取MAX（`https://poi-poi.co.jp/bike/`）向けの記事を、WordPressテーマSWELLで読みやすい本文HTMLにする。入力は `article-linked.html`、出力は `article-decorated.html` とする。
 
 ## 使用する装飾
 
@@ -14,6 +14,7 @@ WordPressテーマSWELLで読みやすい本文HTMLを作成する。入力は `
 ## CTA方針
 
 - バイク買取MAXへの相談・査定導線を自然に配置する
+- 査定依頼、無料出張査定、バイク売却相談への導線として自然に配置する
 - 過度な煽りや保証表現は使わない
 
 ## 出力
