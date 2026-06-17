@@ -41,7 +41,17 @@ if (!slug) {
 }
 const dir = path.join('articles', slug);
 await mkdir(dir, { recursive: true });
-const required = ['input.yml', 'serp.md', 'outline.md', 'draft.md', 'article.html', 'article-linked.html', 'article-decorated.html', 'external-links.md'];
+const required = [
+  'input.yml',
+  'serp.md',
+  'headings.csv',
+  'heading-plan.md',
+  'draft.md',
+  'article.html',
+  'article-linked.html',
+  'article-decorated.html',
+  'external-links.md'
+];
 const results = [];
 let ok = true;
 async function fail(message, action) { ok = false; results.push(`- NG: ${message}\n  - 次アクション: ${action}`); }
@@ -82,7 +92,10 @@ const midHtml = `article${String.fromCharCode(46)}html`;
 const wpWord = `Word${'Press'}`;
 const forbiddenPattern = `${midHtml}.*po${'st'}|po${'st'}.*${midHtml}|${midHtml}.*${wpWord}|${wpWord}.*${midHtml}`;
 const staleRefs = scanRepo(forbiddenPattern);
-const filteredRefs = staleRefs.split('\n').filter((line) => line && !line.includes('check-article.mjs')).join('\n');
+const filteredRefs = staleRefs
+  .split('\n')
+  .filter((line) => line && !line.includes('check-article.mjs') && !line.includes('check-report.md'))
+  .join('\n');
 if (filteredRefs) await fail('途中生成HTMLを投稿本文として使う可能性がある記述が残っています', filteredRefs);
 else pass('途中生成HTMLを投稿本文として使う記述はありません');
 
