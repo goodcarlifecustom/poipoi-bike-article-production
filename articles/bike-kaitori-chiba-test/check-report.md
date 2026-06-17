@@ -19,7 +19,8 @@
 - OK: heading-plan.md にH1はありません
 - OK: heading-plan.md のH2は5個です
 - OK: heading-plan.md のH3は9個です
-- OK: article-decorated.html の本文文字数は961文字です
+- OK: article-decorated.html にH1はありません
+- OK: article-decorated.html の本文文字数は931文字です
 - OK: target_word_count (1000) に対する極端な不足はありません
 - OK: main_keyword/keyword 入力を確認しました: バイク 買取 千葉
 - OK: title 入力を確認しました

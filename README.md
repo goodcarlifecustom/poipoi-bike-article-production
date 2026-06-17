@@ -136,3 +136,5 @@ npm run post -- --slug bike-kaitori-chiba
 - `external-links.md`: 外部リンク候補と採用理由
 - `check-report.md`: 品質チェック結果、失敗原因
 - `wp-result.md`: WordPress下書き投稿結果
+
+WordPress本文内にH1は入れません。記事タイトルはWordPress側の投稿タイトルとして扱い、本文HTMLはH2から開始します。

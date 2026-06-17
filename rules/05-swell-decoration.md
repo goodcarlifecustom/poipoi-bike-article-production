@@ -16,6 +16,15 @@ WordPressテーマSWELLで読みやすい本文HTMLを作成する。入力は `
 - バイク買取MAXへの相談・査定導線を自然に配置する
 - 過度な煽りや保証表現は使わない
 
+## H1禁止
+
+WordPress投稿タイトルがH1として表示される前提のため、本文HTML内にH1は入れないでください。
+
+- article-decorated.html に `<h1>` を含めない
+- 記事タイトルはWordPress投稿タイトルとして扱う
+- 本文の見出しは `<h2>` から開始する
+- `<h1>` が必要に見える場合でも、本文側では `<h2>` に変換する
+
 ## 出力
 
 `articles/{slug}/article-decorated.html` に保存する。WordPress下書き投稿に使う本文ファイルもこのファイルに統一する。

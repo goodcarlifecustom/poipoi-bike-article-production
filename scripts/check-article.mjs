@@ -51,6 +51,8 @@ const decoratedPath = path.join(dir, 'article-decorated.html');
 let textLength = 0;
 if (existsSync(decoratedPath)) {
   const html = await readFile(decoratedPath, 'utf8'); textLength = visibleTextLength(html);
+  if (/<h1\b/i.test(html)) await fail('article-decorated.html にH1が含まれています。WordPress投稿タイトルと重複するため、本文はH2から開始してください。', 'article-decorated.html からH1を削除し、本文の最初の見出しをH2にしてください');
+  else pass('article-decorated.html にH1はありません');
   if (textLength < 500) await fail('article-decorated.html の本文文字数が500文字未満です。WordPress投稿を停止しました。', '本文を500文字以上に増やしてください'); else pass(`article-decorated.html の本文文字数は${textLength}文字です`);
   if (!/https?:\/\//.test(html)) await fail('article-decorated.html に外部リンクがありません', '信頼できる外部リンクを追加してください');
   if (/status\s*[:=]\s*(?!draft)/i.test(html)) await fail('draft以外の投稿ステータスらしき記述があります', '投稿ステータスをdraftに統一してください');
