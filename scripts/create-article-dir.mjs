@@ -15,7 +15,7 @@ if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
 
 const dir = path.join('articles', slug);
 await mkdir(dir, { recursive: true });
-for (const file of ['input.yml', 'serp.md', 'outline.md', 'draft.md', 'article.html', 'article-linked.html', 'article-decorated.html', 'external-links.md', 'check-report.md']) {
+for (const file of ['input.yml', 'serp.md', 'heading-plan.md', 'draft.md', 'article.html', 'article-linked.html', 'article-decorated.html', 'external-links.md', 'check-report.md']) {
   const target = path.join(dir, file);
   if (!existsSync(target)) await writeFile(target, '', 'utf8');
 }

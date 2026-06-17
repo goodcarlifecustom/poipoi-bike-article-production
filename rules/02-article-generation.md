@@ -21,6 +21,6 @@
 
 ## 出力
 
-- `articles/{slug}/outline.md`
+- `articles/{slug}/heading-plan.md`
 - `articles/{slug}/draft.md`
 - `articles/{slug}/article.html`
