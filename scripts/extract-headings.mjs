@@ -10,6 +10,8 @@ function cleanText(html) { return decodeEntities(stripTags(html)).replace(/[ã€ã
 function csvCell(value) { return `"${String(value ?? '').replace(/"/g, '""')}"`; }
 function yamlValue(text, key) { const m = text.match(new RegExp(`^${key}:\\s*["']?(.+?)["']?\\s*$`, 'm')); return m?.[1]?.trim(); }
 function yamlList(text, key) {
+  const scalar = yamlValue(text, key);
+  if (scalar) return scalar.split(',').map((v) => v.trim()).filter(Boolean);
   const lines = text.split(/\r?\n/); const out = []; let inList = false;
   for (const line of lines) {
     if (new RegExp(`^${key}:\\s*$`).test(line)) { inList = true; continue; }
@@ -59,8 +61,10 @@ const inputText = existsSync(path.join(dir, 'input.yml')) ? await readFile(path.
 const mainKeyword = arg('main_keyword') || arg('keyword') || yamlValue(inputText, 'main_keyword') || yamlValue(inputText, 'keyword') || '';
 const title = arg('title') || yamlValue(inputText, 'title') || '';
 const targetWordCount = arg('target_word_count') || yamlValue(inputText, 'target_word_count') || '';
+const relatedKeywords = yamlList(inputText, 'related_keywords');
 const providedUrls = [...values('url'), ...yamlList(inputText, 'reference_urls')];
-const candidates = providedUrls.length ? providedUrls : await searchUrls(mainKeyword).catch(() => []);
+const searchQueries = [mainKeyword, ...relatedKeywords.slice(0, 3)].filter(Boolean).slice(0, 5);
+const candidates = providedUrls.length ? providedUrls : [...new Set((await Promise.all(searchQueries.map((q) => searchUrls(q).catch(() => [])))).flat())];
 const selected = []; const excluded = []; const rows = [];
 let extractionFailed = false;
 for (const url of candidates) {

@@ -7,7 +7,8 @@
     "create": "node scripts/create-article-dir.mjs",
     "extract": "node scripts/extract-headings.mjs",
     "check": "node scripts/check-article.mjs",
-    "post": "node scripts/post-wp-draft.mjs"
+    "post": "node scripts/post-wp-draft.mjs",
+    "test": "node --test"
   },
   "dependencies": {
     "dotenv": "^16.4.7"

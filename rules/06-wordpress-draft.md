@@ -1,43 +1,26 @@
 # 06 WordPress下書き投稿ルール
 
-## 目的
+`post_to_wp: true` の場合のみ `npm run post -- --slug {slug}` を実行する。`wordpress_draft` はcreate時に `post_to_wp` へ正規化される。
 
-WordPress REST APIを使い、`article-decorated.html` を下書き投稿する。
+## 環境変数
 
-## 実行条件
+`WP_REST_ROOT`、`WP_USERNAME`、`WP_APP_PASSWORD`、`WP_DEFAULT_STATUS` をプロセス環境変数から読む。`.env` は必須にせず、自動作成しない。`WP_DEFAULT_STATUS` が `draft` 以外なら停止する。
 
-- Codex Cloudのタスク詳細で `post_to_wp: true` の場合のみ投稿工程へ進む
-- `post_to_wp` の初期推奨値は `false`
-- WordPress下書き投稿まで進めたい場合のみ `post_to_wp: true` を指定する
-- `post_to_wp: false` または未指定の場合は、品質チェックまでで止める
-- どちらの場合も `article-decorated.html` までは作成する
+## 投稿前確認
 
-## 絶対条件
+1. REST APIルートへの匿名GET
+2. WordPress認証確認
+3. 投稿作成権限確認
+4. publish/draft/pending/private/future の同一スラッグ重複確認
+5. 品質チェック
 
-- 投稿ステータスは必ず `draft`
-- 公開状態で投稿しない
-- `.env` の `WP_DEFAULT_STATUS` も `draft` にする
-- 送信payloadも必ず `status: "draft"` に固定する
-- `article-decorated.html` が存在しない、空、またはHTMLタグを除いた本文500文字未満の場合は投稿を停止し、`check-report.md` に原因を記録する
-- WordPress Application Password は `.env` で管理し、コミットしない
+同一スラッグが1件でもあれば停止し、既存投稿の更新・削除、別スラッグ投稿、publish/future投稿をしない。
 
-## 投稿エンドポイント
+## 投稿仕様
 
-`WP_REST_ROOT + wp/v2/posts`
+- エンドポイント: `POST {WP_REST_ROOT}/wp/v2/posts`
+- payload: `title`、`content`、`slug`、`status: draft`
+- content: `articles/{slug}/article-decorated.html`
+- 通信はPython `urllib.request` と `ProxyHandler()` を使い、Codex環境のHTTP/HTTPSプロキシに対応する。
 
-## 実行
-
-```bash
-npm run post -- --slug {slug}
-```
-
-## 出力
-
-投稿成功後、`articles/{slug}/wp-result.md` に以下を保存する。
-
-- 投稿ID
-- 編集URL
-- 確認URL
-- status
-- 投稿前本文文字数
-- 投稿後本文文字数
+成功時だけ `metadata.json` の `wordpress_draft_id`、`wordpress_draft_url` と `wp-result.md` を更新する。

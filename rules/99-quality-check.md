@@ -1,46 +1,16 @@
 # 99 品質チェックルール
 
-## 目的
+`npm run check -- --slug {slug}` で、3項目入力ワークフローの成果物を検証する。
 
-投稿前に記事・HTML・設定の重大な不備を検出する。
+必須ファイル: `input.yml`、`metadata.json`、`research.md`、`serp.md`、`headings.csv`、`heading-analysis.md`、`heading-plan.md`、`draft.md`、`article.html`、`article-linked.html`、`article-decorated.html`、`external-links.md`。
 
-## 必須ファイル
+主な検証項目:
 
-- `input.yml`
-- `serp.md`
-- `headings.csv`
-- `heading-analysis.md`
-- `heading-plan.md`
-- `draft.md`
-- `article.html`
-- `article-linked.html`
-- `article-decorated.html`
-- `external-links.md`
-
-## チェック項目
-
-- `heading-plan.md` が存在する
-- `heading-plan.md` が空でない
-- `heading-plan.md` がHTMLタグのみで構成されている
-- `heading-plan.md` に `<h2>` が3つ以上ある
-- `heading-plan.md` に `<h3>` が必要に応じてある
-- `heading-plan.md` にH1がない
-- `outline.md` が存在しない
-- `article-decorated.html` が存在する
-- `article-decorated.html` のHTMLタグ除去後本文が500文字以上
-- `target_word_count` がある場合、記事本文が目標文字数に対して極端に短すぎない
-- `post_to_wp` 未指定またはfalseの場合、WordPress投稿しない
-- 投稿ステータスが `draft` 以外になっていないか
-- `.env` がコミット対象になっていないか
-- 認証情報がファイルに残っていない
-- WordPressアプリケーションパスワード、認証ヘッダー、Basic認証値、nonce、preview token が残っていない
-
-## 実行
-
-```bash
-npm run check -- --slug {slug}
-```
-
-## 出力
-
-`articles/{slug}/check-report.md` に結果を保存する。失敗時は原因と次アクションを必ず記録する。
+- `main_keyword`、配列の `related_keywords`、booleanの `post_to_wp` がある。
+- `metadata.json` の `title`、`slug`、`meta_description`、`search_intent`、`persona`、`article_type`、`target_word_count` が null/空/auto ではない。
+- `status` は `draft`。
+- `article.html`、`article-linked.html`、`article-decorated.html` が空ではなくH1を含まない。
+- タイトル、スラッグ、キーワードがファイル間で一致する。
+- 本文文字数が目標文字数から大きく外れていない。
+- 外部URLのベタ書き、空aタグ、存在しない内部アンカー、秘密情報、コミット対象の `.env` がない。
+- `post_to_wp:false` ならWordPress環境変数を要求しない。`true` なら投稿前条件を確認する。
