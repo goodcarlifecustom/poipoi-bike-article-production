@@ -1,8 +1,9 @@
-# 05 SWELL装飾ルール
+# 05 SWELL・Gutenberg装飾
 
-入力は `article-linked.html`、出力は `article-decorated.html`。WordPress投稿対象は `article-decorated.html` に統一する。
+新規記事では `decoration.json` を作成し、`npm run decorate -- --slug <slug>` で `article-linked.html`（なければ `article.html`）から `article-decorated.html` を生成する。
 
-- 注意喚起、比較表、CTA、箇条書きを必要な箇所だけSWELL向けHTMLで整える。
-- 比較表はcapboxの外に置き、FAQやまとめを無理に表へ入れない。
-- コードブロック記号、作業報告、文字数報告を本文HTMLへ入れない。
-- H1は禁止。本文の見出しはH2から開始する。
+- H2に安定したIDを付与し、最初のH2直前に「この記事でわかること」をcapboxで追加する。
+- H3が3個以上あるH2では、H2直下の導入文直後にH3アンカーリストをcapboxで追加する。
+- 通常ulは `decoration.json` の `list_boxes` で指定されたものだけcapbox化する。仮タイトルは禁止。
+- `markers` で指定した本文内の一意な文字列にpositive/negativeマーカーを適用する。空markは禁止。
+- 装飾後は `npm run check:decoration -- --slug <slug>` を実行し、PASSしない場合はWordPressへ投稿しない。

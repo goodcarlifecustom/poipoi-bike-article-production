@@ -75,3 +75,14 @@ npm run post -- --slug ctn-bike-kaitori-reviews
 ## WordPress投稿の安全条件
 
 WordPress投稿は必ず `draft` です。環境変数 `WP_REST_ROOT`、`WP_USERNAME`、`WP_APP_PASSWORD`、`WP_DEFAULT_STATUS=draft` をプロセス環境変数から読み、`.env` は必須にしません。投稿前にRESTルートGET、認証確認、作成権限確認、同一スラッグ重複確認、品質チェックを行います。既存投稿の更新・削除、別スラッグ投稿、公開投稿は行いません。
+
+## SWELL・Gutenberg装飾フロー
+
+新規記事では `decoration.json` を生成し、`article-linked.html`（なければ `article.html`）から `article-decorated.html` を冪等に生成します。WordPress投稿処理はこの装飾PRでは変更しません。
+
+```bash
+npm run decorate -- --slug <slug>
+npm run check:decoration -- --slug <slug>
+```
+
+装飾処理では、H2/H3の安定ID、「この記事でわかること」、必要なH3アンカーリスト、設定された通常ulのcapbox、positive/negativeマーカー、`decoration-manifest.json` を生成・検証します。
