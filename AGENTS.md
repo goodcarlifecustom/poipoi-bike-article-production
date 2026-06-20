@@ -10,6 +10,16 @@
 - 失敗時は `articles/{slug}/check-report.md` に原因と次アクションを記録する。
 - WordPress投稿は `post_to_wp: true` に正規化された場合のみ行う。
 
+
+## WordPress完了ルール
+
+- 正式な記事完了コマンドは `npm run article:complete -- --slug <slug>` とする。
+- 新規記事は、記事検証、装飾検証、WordPress draft作成、完成本文反映、REST API再取得、本文SHA-256一致、metadata.json更新がすべて成功するまで完了扱いにしない。
+- `npm run post -- --slug <slug>` だけを単独で実行して記事作成完了として報告してはならない。
+- WordPress投稿は2段階方式を使う。新規作成時は title、slug、status:draft、一時コメントだけで最小下書きを作成し、取得した投稿IDへ `article-decorated.html` の content のみを更新する。
+- 完成本文を新規作成エンドポイントへ一括POSTしてはならない。
+- 「POSTがタイムアウトしたため未投稿」の状態で記事作成完了としてPRを作成することは禁止する。投稿に失敗した場合は、PRを作成しても最終結果を未完了として扱う。
+
 ## 標準工程
 
 `rules/00-keyword-analysis.md`、`rules/01-heading-research.md`、`rules/02-heading-plan-generation.md`、`rules/03-article-generation.md`、`rules/04-external-links.md`、`rules/05-swell-decoration.md`、`rules/99-quality-check.md` の順に実行する。`post_to_wp: true` の場合のみ `rules/06-wordpress-draft.md` を最後に実行する。

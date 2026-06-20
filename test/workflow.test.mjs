@@ -61,3 +61,36 @@ test('post_to_wp false exits before network/env requirement', async () => {
     assert.notEqual(p.code, 0); const report = await readFile(path.join(dir,'articles/sample/check-report.md'),'utf8'); assert.match(report, /接続しません/);
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
+import { buildMinimalDraftPayload, buildContentUpdatePayload } from '../scripts/post-wp-draft.mjs';
+
+test('staged post initial payload does not contain completed article content', () => {
+  const payload = buildMinimalDraftPayload({ title: '記事タイトル', slug: 'bike-kaitori', contentSha: 'abc123', requestId: 'req-1' });
+  assert.equal(payload.title, '記事タイトル');
+  assert.equal(payload.slug, 'bike-kaitori');
+  assert.equal(payload.status, 'draft');
+  assert.match(payload.content, /codex-staged-draft/);
+  assert.match(payload.content, /sha256=abc123/);
+  assert.doesNotMatch(payload.content, /完成した長い記事本文/);
+});
+
+test('staged post content update payload sends content only', () => {
+  const payload = buildContentUpdatePayload('<p>完成した長い記事本文</p>');
+  assert.deepEqual(Object.keys(payload), ['content']);
+  assert.equal(payload.content, '<p>完成した長い記事本文</p>');
+});
+
+test('article complete invokes decoration check before post script', async () => {
+  const source = await readFile(path.join(repo,'scripts/article-complete.mjs'),'utf8');
+  assert.ok(source.indexOf("check-decoration.mjs") < source.indexOf("post-wp-draft.mjs"));
+});
+
+test('post script contains safeguards for draft reuse, publish stop, timeout recovery, and decorated source', async () => {
+  const source = await readFile(path.join(repo,'scripts/post-wp-draft.mjs'),'utf8');
+  assert.match(source, /article-decorated\.html/);
+  assert.match(source, /existing-id/);
+  assert.match(source, /existing-slug-draft/);
+  assert.match(source, /publish.*更新しません|publish\'/s);
+  assert.match(source, /最小下書き作成がタイムアウト/);
+  assert.match(source, /本文更新がタイムアウト/);
+  assert.match(source, /status: 'draft'/);
+});
