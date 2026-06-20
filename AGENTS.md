@@ -35,3 +35,10 @@
 - 読者を過度に不安にさせる表現、不自然なキーワード連呼。
 - 架空の口コミ、体験談、料金、順位、投稿者の作成。
 - 公開状態でのWordPress投稿、既存投稿の更新・削除、別スラッグへの代替投稿。
+
+## 新規記事のSWELL・Gutenberg装飾
+
+- 新規記事では `decoration.json` を作成し、原則 `enabled: true` とする。
+- 装飾生成は `npm run decorate -- --slug <slug>`、装飾検証は `npm run check:decoration -- --slug <slug>` を使う。
+- 装飾は `article-linked.html`（なければ `article.html`）から `article-decorated.html` を冪等生成し、装飾済みHTMLを入力として再装飾しない。
+- この装飾手順はWordPress下書き投稿処理を変更しない。
