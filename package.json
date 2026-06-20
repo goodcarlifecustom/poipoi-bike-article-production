@@ -8,7 +8,10 @@
     "extract": "node scripts/extract-headings.mjs",
     "check": "node scripts/check-article.mjs",
     "post": "node scripts/post-wp-draft.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "decorate": "node scripts/decorate-article.mjs",
+    "check:decoration": "node scripts/check-decoration.mjs",
+    "article:complete": "node scripts/article-complete.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7"

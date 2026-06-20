@@ -1,8 +1,17 @@
 # WordPress下書き投稿結果
-
-- status: 未投稿
-- attempted_at: 2026-06-20T08:20:00Z
-- command: npm run post -- --slug bike-kaitori
-- result: FAIL
-- reason: WordPress REST APIへのPOSTリクエストがタイムアウトしたため、下書き作成完了を確認できなかった。
-- next_action: WordPress管理画面またはREST APIで同一スラッグ `bike-kaitori` の投稿有無を確認し、重複がない場合のみ再実行する。再実行時も投稿ステータスは必ず `draft` にする。
+- 投稿ID: 29442
+- 下書きURL: https://poi-poi.co.jp/bike/?p=29442
+- title: バイク買取はどこがいい？相場・査定・必要書類・注意点を初めてでもわかるように解説
+- slug: bike-kaitori
+- status: draft
+- request_id: 9fd21222-b952-4e68-8727-da711c2fcf9b
+- 最小下書き作成結果: existing-id
+- タイトル更新結果: unchanged
+- 本文更新結果: update-timeout-saved
+- REST API再取得結果: success
+- article-decorated.html SHA-256: 1ba18cd36c8a8c575f1a574e759f2e4cd0db0f6f525c0602f3ae377de3926f14
+- WordPress本文 SHA-256: 1ba18cd36c8a8c575f1a574e759f2e4cd0db0f6f525c0602f3ae377de3926f14
+- SHA-256一致: yes
+- H1なし確認: yes
+- 装飾確認: success
+- 実行日時: 2026-06-20T08:36:10.806Z

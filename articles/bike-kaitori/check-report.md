@@ -2,7 +2,6 @@
 
 - slug: bike-kaitori
 - result: PASS
-
 ## 詳細
 
 - OK: input.yml を確認しました
@@ -39,10 +38,3 @@
 - OK: 外部URLのベタ書きは検出されません
 - OK: .env はコミット対象ではありません
 - OK: 認証情報・nonceの残存は検出されませんでした
-
-## WordPress投稿確認
-
-- result: FAIL
-- command: npm run post -- --slug bike-kaitori
-- reason: WordPress REST APIへのPOSTリクエストがタイムアウトしたため、下書き作成完了を確認できなかった。
-- next_action: WordPress管理画面またはREST APIで同一スラッグの投稿有無を確認し、未作成であることを確認してから再実行する。

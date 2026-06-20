@@ -50,10 +50,14 @@ npm run create -- --main-keyword "CTN バイク買取 評判" --related-keywords
 npm run extract -- --slug ctn-bike-kaitori-reviews
 npm test
 npm run check -- --slug ctn-bike-kaitori-reviews
-npm run post -- --slug ctn-bike-kaitori-reviews
+npm run decorate -- --slug ctn-bike-kaitori-reviews
+npm run check:decoration -- --slug ctn-bike-kaitori-reviews
+npm run article:complete -- --slug ctn-bike-kaitori-reviews
 ```
 
-`npm run post` は `post_to_wp: true` の場合だけ実行されます。`post_to_wp:false` の記事ではWordPress環境変数を要求せず、ネットワーク接続もしません。
+`npm run article:complete -- --slug <slug>` が正式な記事完了コマンドです。`article:complete` は記事検証、装飾検証、WordPress draft作成、完成本文反映、REST API再取得、本文SHA-256一致確認、metadata.json更新までを完了条件にします。新規記事作成タスクでは、旧式の `npm run post -- --slug <slug>` だけを実行して完了扱いにしてはいけません。
+
+`npm run post` は内部用のWordPress投稿コマンドです。新規作成が必要な場合も、完成本文を新規POSTへ一括送信せず、title・slug・status:draft・一時コメントだけの最小下書きを作成してから、取得した投稿IDへcontentのみを更新します。`post_to_wp:false` の記事ではWordPress環境変数を要求せず、ネットワーク接続もしません。
 
 ## 出力ファイルの役割
 
@@ -74,4 +78,4 @@ npm run post -- --slug ctn-bike-kaitori-reviews
 
 ## WordPress投稿の安全条件
 
-WordPress投稿は必ず `draft` です。環境変数 `WP_REST_ROOT`、`WP_USERNAME`、`WP_APP_PASSWORD`、`WP_DEFAULT_STATUS=draft` をプロセス環境変数から読み、`.env` は必須にしません。投稿前にRESTルートGET、認証確認、作成権限確認、同一スラッグ重複確認、品質チェックを行います。既存投稿の更新・削除、別スラッグ投稿、公開投稿は行いません。
+WordPress投稿は必ず `draft` です。「POSTがタイムアウトしたため未投稿」の状態を記事作成完了として扱うことは禁止です。環境変数 `WP_REST_ROOT`、`WP_USERNAME`、`WP_APP_PASSWORD`、`WP_DEFAULT_STATUS=draft` をプロセス環境変数から読み、`.env` は必須にしません。投稿前にRESTルートGET、認証確認、作成権限確認、同一スラッグ重複確認、品質チェックを行います。既存投稿の更新・削除、別スラッグ投稿、公開投稿は行いません。投稿後はREST APIで再取得し、status=draft、slug、content.raw、H1なし、article-decorated.htmlとWordPress本文のSHA-256一致を確認します。
