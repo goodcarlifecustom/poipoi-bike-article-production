@@ -13,7 +13,8 @@ function headingSections(html, tag) {
   const matches = [...html.matchAll(re)];
   return matches.map((m, i) => {
     const start = m.index + m[0].length;
-    const next = matches[i + 1]?.index ?? html.length;
+    const nextHeading = html.slice(start).search(/<h[23]\b/i);
+    const next = nextHeading >= 0 ? start + nextHeading : html.length;
     if (tag === 'h3') {
       const boundary = html.slice(start, next).search(/<h[23]\\b/i);
       return { heading: stripTags(m[1]), body: html.slice(start, boundary >= 0 ? start + boundary : next) };
@@ -23,6 +24,42 @@ function headingSections(html, tag) {
 }
 function paragraphs(html) { return [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => stripTags(m[1])).filter(Boolean); }
 function firstVisibleBlockText(html) { const m = html.match(/<(p|div|li|blockquote)\b[^>]*>([\s\S]*?)<\/\1>/i); return m ? stripTags(m[2]) : stripTags(html).slice(0, 120); }
+function headings(html) { return [...html.matchAll(/<h([23])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].map((m) => ({ level: Number(m[1]), text: stripTags(m[2]), index: m.index })); }
+function tableFirstColumnValues(tableHtml) {
+  return [...tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) => {
+    const cells = [...row[1].matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)];
+    return cells.length ? stripTags(cells[0][1]) : '';
+  }).filter((v) => v && !/^サービス名$|^項目$/.test(v));
+}
+function adjacentTablesWithDuplicateFirstColumn(html) {
+  const tables = [...html.matchAll(/<table\b[\s\S]*?<\/table>/gi)];
+  const problems = [];
+  for (let i = 0; i < tables.length - 1; i++) {
+    const between = html.slice(tables[i].index + tables[i][0].length, tables[i + 1].index);
+    if (stripTags(between)) continue;
+    const a = new Set(tableFirstColumnValues(tables[i][0]));
+    const b = new Set(tableFirstColumnValues(tables[i + 1][0]));
+    const base = Math.min(a.size, b.size);
+    if (!base) continue;
+    const overlap = [...a].filter((v) => b.has(v)).length / base;
+    if (overlap >= 0.6) problems.push(`${Math.round(overlap * 100)}%`);
+  }
+  return problems;
+}
+function likelyFlattenedHeadingRuns(html) {
+  const hs = headings(html);
+  const problems = [];
+  for (let i = 0; i < hs.length; i++) {
+    if (hs[i].level !== 2) continue;
+    let run = 1;
+    for (let j = i + 1; j < hs.length && hs[j].level === 2; j++) run++;
+    if (run < 4) continue;
+    const block = html.slice(hs[i].index, hs[i + run]?.index ?? html.length);
+    const paragraphsBetween = (block.match(/<p\b/gi) || []).length;
+    if (paragraphsBetween <= run + 1) problems.push(`${hs[i].text} から ${run}件`);
+  }
+  return problems;
+}
 const slug = argvValue(process.argv, 'slug');
 if (!slug) { console.error('Usage: npm run check -- --slug slug'); process.exit(1); }
 const dir = path.join('articles', slug); await mkdir(dir, { recursive: true });
@@ -47,6 +84,16 @@ if (metadata.target_keyword && mainKeyword && metadata.target_keyword !== mainKe
 for (const f of ['article.html','article-linked.html','article-decorated.html']) {
   if (!existsSync(path.join(dir, f))) continue; const html = await readFile(path.join(dir, f), 'utf8');
   if (!html.trim()) continue; if (/<h1\b/i.test(html)) await fail(`${f} にH1があります`); else pass(`${f} にH1はありません`);
+  const hs = headings(html);
+  const h3Count = hs.filter((h) => h.level === 3).length;
+  if (hs.length >= 8 && h3Count === 0) await fail(`${f} は見出しが8件以上あるのにH3が0件です`, '主要章をH2、章内項目をH3に戻してください');
+  else pass(`${f} のH2/H3件数を確認しました`);
+  const duplicateTables = adjacentTablesWithDuplicateFirstColumn(html);
+  if (duplicateTables.length) await fail(`${f} に先頭列が60%以上重複する隣接テーブルがあります（${duplicateTables.join(', ')}）`, '同じサービス一覧を軸にした比較表は統合してください');
+  else pass(`${f} の隣接テーブル重複を確認しました`);
+  const flatRuns = likelyFlattenedHeadingRuns(html);
+  if (flatRuns.length) await fail(`${f} に親子構造にすべきH2連続が疑われます: ${flatRuns.join(' / ')}`, '章内項目はH3へ変更してください');
+  else pass(`${f} のH2連続構造を確認しました`);
   if (/<a\b[^>]*>\s*<\/a>/i.test(html)) await fail(`${f} に空のaタグがあります`);
   const ids = anchors(html); for (const href of [...html.matchAll(/href=["']#([^"']+)["']/gi)].map((m)=>m[1])) if (!ids.includes(href)) await fail(`${f} に存在しない内部アンカー #${href} があります`);
   const opening = firstVisibleBlockText(html);

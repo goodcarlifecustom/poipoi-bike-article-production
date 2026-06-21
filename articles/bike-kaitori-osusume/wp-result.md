@@ -1,0 +1,1 @@
+WordPress投稿はpost_to_wp:trueではないため未実施。
