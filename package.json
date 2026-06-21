@@ -10,7 +10,9 @@
     "post": "node scripts/post-wp-draft.mjs",
     "test": "node --test",
     "decorate": "node scripts/decorate-article.mjs",
-    "check:decoration": "node scripts/check-decoration.mjs"
+    "check:decoration": "node scripts/check-decoration.mjs",
+    "wp:draft": "node scripts/post-wordpress-draft.mjs",
+    "wp:doctor": "node scripts/check-wordpress-connection.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

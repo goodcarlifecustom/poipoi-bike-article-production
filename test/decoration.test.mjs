@@ -199,3 +199,10 @@ test('new article template enables decoration config without changing WordPress 
     assert.match(readFileSync(`articles/${slug}/input.yml`,'utf8'),/post_to_wp: false/);
   } finally { cleanup(slug); }
 });
+
+test('marker validation rejects markers ending inside Japanese or ASCII words',()=>{
+  const html='<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">関</span>係します。</p>';
+  assert.match(validateDecoratedHtml(html).join('\n'),/マーカー終了位置が語句の途中/);
+  const ok='<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">重要です</span>。</p>';
+  assert.doesNotMatch(validateDecoratedHtml(ok).join('\n'),/語句の途中/);
+});

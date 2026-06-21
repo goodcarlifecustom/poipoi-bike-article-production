@@ -57,6 +57,29 @@ export function markerNodes(root){return [
   ...els(root,'span').filter(n=>hasClass(n,POSITIVE_MARKER_CLASS)&&hasClass(n,POSITIVE_MARKER_STYLE_CLASS)),
   ...els(root,'mark').filter(n=>hasClass(n,NEGATIVE_MARKER_CLASS)),
 ];}
+function japaneseWordChar(ch){return /^[A-Za-z0-9_\u3040-\u30ff\u3400-\u9fff]$/u.test(ch||'')}
+function textEdge(node, fromEnd=true){
+  if(node.nodeName==='#text'){const s=node.value||''; return fromEnd?s.at(-1)||'':s[0]||''}
+  const kids=node.childNodes||[]; const seq=fromEnd?[...kids].reverse():kids;
+  for(const c of seq){const v=textEdge(c,fromEnd); if(v)return v}
+  return ''
+}
+function adjacentTextSibling(root,node,previous=true){
+  const p=parent(root,node); if(!p)return ''; const i=p.childNodes.indexOf(node);
+  const seq=previous?[...p.childNodes.slice(0,i)].reverse():p.childNodes.slice(i+1);
+  for(const n of seq){const v=textEdge(n,previous); if(v)return v}
+  return ''
+}
+export function markerBoundaryErrors(root){
+  const errors=[];
+  for(const m of markerNodes(root)){
+    const insideStart=textEdge(m,false), insideEnd=textEdge(m,true);
+    const prev=adjacentTextSibling(root,m,true), next=adjacentTextSibling(root,m,false);
+    const label=text(m).trim().slice(0,40);
+    if(japaneseWordChar(insideEnd)&&japaneseWordChar(next)) errors.push(`マーカー終了位置が語句の途中の疑い: ${label}`);
+  }
+  return errors;
+}
 export function validateMarkerPlacement(root){
   const errors=[];
   const markers=markerNodes(root);
@@ -65,6 +88,7 @@ export function validateMarkerPlacement(root){
     if(isIn(root,m,n=>['a','li','ul','ol','table','thead','tbody','tr','td','th','h1','h2','h3','h4','h5','h6'].includes(n.tagName)||/cta/i.test(attr(n,'class')))) errors.push('禁止箇所のマーカー');
     if((m.childNodes||[]).some(c=>markerNodes(c).length>0)) errors.push('マーカー入れ子');
   }
+  errors.push(...markerBoundaryErrors(root));
   for(const h of [...els(root,'h2'),...els(root,'h3')]){
     const nodes=sectionNodes(root,h);
     const scope=h.tagName==='h2'?nodes.slice(0,nodes.findIndex(n=>n.tagName==='h3')>=0?nodes.findIndex(n=>n.tagName==='h3'):nodes.length):nodes;

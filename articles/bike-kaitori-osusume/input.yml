@@ -27,7 +27,7 @@ category: "バイク買取"
 target_media: "https://poi-poi.co.jp/bike/"
 reference_urls:
 []
-post_to_wp: false
+post_to_wp: true
 status: draft
 created_at: "2026-06-21T06:46:22.726Z"
 notes: ""

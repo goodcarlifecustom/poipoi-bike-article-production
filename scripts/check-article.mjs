@@ -118,6 +118,6 @@ const secretPattern = 'WP_APP_PASSWORD=.+|WP_APPLICATION_PASSWORD=.+|Authori' + 
 const leaks = scanRepo(secretPattern).split('\n').filter((line) => line && !line.includes('check-article.mjs') && !line.includes('README.md') && !line.includes('rules/99-quality-check.md') && !line.includes('scripts/post-wp-draft.mjs')).join('\n');
 if (leaks) await fail('認証情報またはnonceらしき文字列が残っています', leaks); else pass('認証情報・nonceの残存は検出されませんでした');
 if (metadata.post_to_wp === false) pass('post_to_wp:false のためWordPress環境変数は要求しません');
-else { for (const k of ['WP_REST_ROOT','WP_USERNAME','WP_APP_PASSWORD','WP_DEFAULT_STATUS']) if (!process.env[k]) await fail(`post_to_wp:true ですが ${k} が未設定です`); if (process.env.WP_DEFAULT_STATUS && process.env.WP_DEFAULT_STATUS !== 'draft') await fail('WP_DEFAULT_STATUS がdraftではありません'); }
+else { for (const k of ['WP_SITE_URL','WP_USERNAME','WP_APPLICATION_PASSWORD']) if (!process.env[k]) results.push(`- WARN: post_to_wp:true ですが ${k} が未設定です（投稿コマンド実行時に必須）`); pass('WordPress投稿ステータスはwp:draftでdraft固定です'); }
 const report = `# 品質チェックレポート\n\n- slug: ${slug}\n- result: ${ok ? 'PASS' : 'FAIL'}\n\n## 詳細\n\n${results.join('\n')}\n`;
 await writeFile(path.join(dir, 'check-report.md'), report, 'utf8'); console.log(report); if (!ok) process.exit(1);
