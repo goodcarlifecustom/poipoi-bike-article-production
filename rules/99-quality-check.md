@@ -10,6 +10,12 @@
 - `metadata.json` の `title`、`slug`、`meta_description`、`search_intent`、`persona`、`article_type`、`target_word_count` が null/空/auto ではない。
 - `status` は `draft`。
 - `article.html`、`article-linked.html`、`article-decorated.html` が空ではなくH1を含まない。
+
+- 記事冒頭が「結論：」「要点：」「ポイント：」などのラベルで始まっていない。
+- H3直下が1段落だけで終わっていない。
+- 各H3は原則2〜4段落で、「端的な回答」「理由や条件」「具体例または行動」を含む。
+- H3末尾が「場合があります」「確認しましょう」だけの曖昧な促しで終わっていない。
+- 100文字未満で完結する内容を独立H3にしていない。
 - タイトル、スラッグ、キーワードがファイル間で一致する。
 - 本文文字数が目標文字数から大きく外れていない。
 - 外部URLのベタ書き、空aタグ、存在しない内部アンカー、秘密情報、コミット対象の `.env` がない。

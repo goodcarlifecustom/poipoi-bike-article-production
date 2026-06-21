@@ -7,6 +7,22 @@ import { argvValue, isUnresolved, parseList, parseScalar } from './workflow-util
 function visibleTextLength(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--([\s\S]*?)-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, '').length; }
 function scanRepo(pattern) { try { return execSync(`rg -n "${pattern}" . -g '!node_modules' -g '!.git'`, { encoding: 'utf8' }).trim(); } catch { return ''; } }
 function anchors(html) { return [...html.matchAll(/id=["']([^"']+)["']/gi)].map((m) => m[1]); }
+function stripTags(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim(); }
+function headingSections(html, tag) {
+  const re = new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'gi');
+  const matches = [...html.matchAll(re)];
+  return matches.map((m, i) => {
+    const start = m.index + m[0].length;
+    const next = matches[i + 1]?.index ?? html.length;
+    if (tag === 'h3') {
+      const boundary = html.slice(start, next).search(/<h[23]\\b/i);
+      return { heading: stripTags(m[1]), body: html.slice(start, boundary >= 0 ? start + boundary : next) };
+    }
+    return { heading: stripTags(m[1]), body: html.slice(start, next) };
+  });
+}
+function paragraphs(html) { return [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => stripTags(m[1])).filter(Boolean); }
+function firstVisibleBlockText(html) { const m = html.match(/<(p|div|li|blockquote)\b[^>]*>([\s\S]*?)<\/\1>/i); return m ? stripTags(m[2]) : stripTags(html).slice(0, 120); }
 const slug = argvValue(process.argv, 'slug');
 if (!slug) { console.error('Usage: npm run check -- --slug slug'); process.exit(1); }
 const dir = path.join('articles', slug); await mkdir(dir, { recursive: true });
@@ -33,6 +49,18 @@ for (const f of ['article.html','article-linked.html','article-decorated.html'])
   if (!html.trim()) continue; if (/<h1\b/i.test(html)) await fail(`${f} にH1があります`); else pass(`${f} にH1はありません`);
   if (/<a\b[^>]*>\s*<\/a>/i.test(html)) await fail(`${f} に空のaタグがあります`);
   const ids = anchors(html); for (const href of [...html.matchAll(/href=["']#([^"']+)["']/gi)].map((m)=>m[1])) if (!ids.includes(href)) await fail(`${f} に存在しない内部アンカー #${href} があります`);
+  const opening = firstVisibleBlockText(html);
+  if (/^(結論|要点|ポイント)\s*[：:]/.test(opening)) await fail(`${f} の記事冒頭が「結論：」「要点：」「ポイント：」などのラベルで始まっています`, '自然な導入文の中に結論先出しを組み込んでください'); else pass(`${f} の冒頭ラベルを確認しました`);
+  for (const section of headingSections(html, 'h3')) {
+    const ps = paragraphs(section.body);
+    if (ps.length === 1) await fail(`${f} のH3「${section.heading}」が1段落だけで終わっています`, '端的な回答、理由や条件、具体例または行動を2〜4段落で構成してください');
+    else if (ps.length > 0 && (ps.length < 2 || ps.length > 4)) await fail(`${f} のH3「${section.heading}」の段落数が${ps.length}段落です`, '原則2〜4段落に調整し、短い内容はリストやFAQへ統合してください');
+    else if (ps.length >= 2) pass(`${f} のH3「${section.heading}」は2〜4段落です`);
+    const sectionText = stripTags(section.body);
+    if (sectionText.length > 0 && sectionText.length < 100) await fail(`${f} のH3「${section.heading}」が100文字未満で完結しています`, '短い内容は独立H3にせず、リストやFAQブロックへまとめてください');
+    const last = ps.at(-1) || sectionText;
+    if (/(場合があります|確認しましょう)[。.!！]?\s*$/.test(last)) await fail(`${f} のH3「${section.heading}」が曖昧な確認促しだけで終わっています`, '最後に判断基準、具体例、次の行動を明示してください');
+  }
 }
 const decorated = existsSync(path.join(dir, 'article-decorated.html')) ? await readFile(path.join(dir, 'article-decorated.html'), 'utf8') : '';
 const len = visibleTextLength(decorated); const target = Number(metadata.target_word_count || 0);
