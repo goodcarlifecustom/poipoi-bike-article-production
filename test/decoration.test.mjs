@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { validateDecoratedHtml } from '../scripts/decoration-utils.mjs';
 import { cpSync, readFileSync, writeFileSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 const fixtureRoot = 'test/fixtures/decoration-article';
@@ -37,6 +38,156 @@ test('invalid placeholder title fails decoration',()=>{
     c.list_boxes[0].title='ここにタイトル';
     writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify(c));
     assert.throws(()=>sh(['run','decorate','--','--slug',slug]));
+  } finally { cleanup(slug); }
+});
+
+
+
+test('marker validation rejects missing, excessive, forbidden, empty and nested markers',()=>{
+  const cases = [
+    ['missing marker', '<h2 id="a">見出し</h2><p>本文があります。</p>', /本文マーカーなし/],
+    ['too many markers', '<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">一</span><span class="swl-marker mark_yellow">二</span><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-swl-deep-01-color">三</mark></p>', /マーカー過多/],
+    ['empty marker', '<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow"> </span></p>', /空マーカー/],
+    ['list marker', '<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">本文</span></p><ul><li><span class="swl-marker mark_yellow">リスト</span></li></ul>', /禁止箇所のマーカー/],
+    ['nested marker', '<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">外<mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-swl-deep-01-color">内</mark></span></p>', /マーカー入れ子/],
+  ];
+  for (const [name, html, pattern] of cases) assert.match(validateDecoratedHtml(html).join('\n'), pattern, name);
+});
+
+
+
+test('new slug E2E auto-creates decoration config and markers without touching source html',()=>{
+  const slug='auto-marker-e2e-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','自動 マーカー','--related-keywords','自動 マーカー 買取','--slug',slug]);
+    const source=readFileSync(`${fixtureRoot}/article.html`,'utf8');
+    writeFileSync(`articles/${slug}/article.html`,source);
+    rmSync(`articles/${slug}/decoration.json`,{force:true});
+    sh(['run','decorate','--','--slug',slug]);
+    sh(['run','check:decoration','--','--slug',slug]);
+    const cfg=JSON.parse(readFileSync(`articles/${slug}/decoration.json`,'utf8'));
+    const decorated=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    assert.ok(cfg.markers.length >= 5);
+    assert.doesNotMatch(readFileSync(`articles/${slug}/article.html`,'utf8'),/swl-marker|has-swl-deep-01-color/);
+    assert.doesNotMatch(readFileSync(`articles/${slug}/article-linked.html`,'utf8'),/swl-marker|has-swl-deep-01-color/);
+    assert.match(decorated,/swl-marker|has-swl-deep-01-color/);
+    assert.match(readFileSync(`articles/${slug}/check-report.md`,'utf8'),/result: PASS/);
+    const firstHtml=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    const firstConfig=readFileSync(`articles/${slug}/decoration.json`,'utf8');
+    sh(['run','decorate','--','--slug',slug]);
+    assert.equal(readFileSync(`articles/${slug}/article-decorated.html`,'utf8'),firstHtml);
+    assert.equal(readFileSync(`articles/${slug}/decoration.json`,'utf8'),firstConfig);
+    cfg.markers[0].tone='negative';
+    cfg.markers[0].text='この章では比較するときの基本を説明します。';
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify(cfg,null,2)+'\n');
+    sh(['run','decorate','--','--slug',slug]);
+    const editedConfig=JSON.parse(readFileSync(`articles/${slug}/decoration.json`,'utf8'));
+    assert.equal(editedConfig.markers[0].tone,'negative');
+    assert.equal(editedConfig.markers[0].text,'この章では比較するときの基本を説明します。');
+  } finally { cleanup(slug); }
+});
+
+
+
+test('auto marker tone, H2 scope, duplicate text and inline tags are safe',()=>{
+  const slug='auto-marker-tone-scope-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','マーカー 判定','--related-keywords','マーカー 判定 買取','--slug',slug]);
+    const source=[
+      '<h2>費用と安心</h2>',
+      '<p>費用は無料です。<strong>重要</strong><code>ABC</code>保険があるので安心です。同じ文章が複数あります。</p>',
+      '<h3>注意点</h3>',
+      '<p>追加費用が発生する場合があります。同じ文章が複数あります。</p>',
+      '<h3>急かされるケース</h3>',
+      '<p>契約を急かされる場合は一度持ち帰りましょう。</p>',
+      '<h2>まとめ</h2>',
+      '<p>同じ文章が複数あります。最後は落ち着いて確認しましょう。</p>'
+    ].join('\n');
+    writeFileSync(`articles/${slug}/article.html`,source);
+    rmSync(`articles/${slug}/decoration.json`,{force:true});
+    sh(['run','decorate','--','--slug',slug]);
+    sh(['run','check:decoration','--','--slug',slug]);
+    const cfg=JSON.parse(readFileSync(`articles/${slug}/decoration.json`,'utf8'));
+    const decorated=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    assert.equal(cfg.markers.find((m)=>m.section.heading==='費用と安心').tone,'positive');
+    assert.equal(cfg.markers.find((m)=>m.section.heading==='注意点').tone,'negative');
+    assert.equal(cfg.markers.find((m)=>m.section.heading==='急かされるケース').tone,'negative');
+    assert.equal(cfg.markers.find((m)=>m.section.heading==='まとめ').text,'同じ文章が複数あります。');
+    assert.equal((decorated.match(/<span class="swl-marker mark_yellow">同じ文章が複数あります。<\/span>/g)||[]).length,1);
+    assert.match(decorated,/<strong>重要<\/strong>/);
+    assert.match(decorated,/<code>ABC<\/code>/);
+  } finally { cleanup(slug); }
+});
+
+
+
+test('manual marker errors fail instead of being auto-replaced',()=>{
+  const slug='manual-marker-error-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','手動 エラー','--related-keywords','手動 エラー 買取','--slug',slug]);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>対象セクション</h2>',
+      '<p>正しい本文があります。</p>',
+      '<h2>インライン横断</h2>',
+      '<p>前半<strong>後半</strong>があります。</p>'
+    ].join('\n'));
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'対象セクション'},tone:'positive',text:'存在しない本文'}]},null,2)+'\n');
+    assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/マーカー文字列を一意に特定できません/);
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'インライン横断'},tone:'positive',text:'前半後半'}]},null,2)+'\n');
+    assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/インライン要素をまたぐ/);
+  } finally { cleanup(slug); }
+});
+
+
+
+test('link attributes are preserved and link text targets fail explicitly',()=>{
+  const slug='link-marker-safety-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','リンク マーカー','--related-keywords','リンク マーカー 買取','--slug',slug]);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>リンク保持</h2>',
+      '<p>リンク前の本文です。<a href="https://example.com/path?a=1&amp;b=2" target="_blank" rel="noopener noreferrer">公式リンク</a>リンク後の本文です。</p>'
+    ].join('\n'));
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'リンク保持'},tone:'positive',text:'リンク後の本文です。'}]},null,2)+'\n');
+    sh(['run','decorate','--','--slug',slug]);
+    let decorated=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    assert.match(decorated,/<a href="https:\/\/example.com\/path\?a=1&amp;b=2" target="_blank" rel="noopener noreferrer">公式リンク<\/a>/);
+    assert.match(decorated,/<span class="swl-marker mark_yellow">リンク後の本文です。<\/span>/);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>リンク内対象</h2>',
+      '<p>詳しくは<a href="https://example.com" target="_blank" rel="noopener">リンク内テキスト</a>を確認してください。</p>'
+    ].join('\n'));
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'リンク内対象'},tone:'positive',text:'リンク内テキスト'}]},null,2)+'\n');
+    assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/インライン要素をまたぐ/);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>リンク横断</h2>',
+      '<p>前半<a href="https://example.com" target="_blank" rel="noopener">中間</a>後半です。</p>'
+    ].join('\n'));
+    writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'リンク横断'},tone:'positive',text:'前半中間後半です。'}]},null,2)+'\n');
+    assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/インライン要素をまたぐ/);
+  } finally { cleanup(slug); }
+});
+
+test('paragraph index drift fails instead of marking another paragraph',()=>{
+  const slug='paragraph-index-drift-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','段落 index','--related-keywords','段落 index 買取','--slug',slug]);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>段落ずれ</h2>',
+      '<p>対象テキストです。最初の段落です。</p>',
+      '<p>別の段落です。</p>'
+    ].join('\n'));
+    rmSync(`articles/${slug}/decoration.json`,{force:true});
+    sh(['run','decorate','--','--slug',slug]);
+    const cfg=readFileSync(`articles/${slug}/decoration.json`,'utf8');
+    assert.match(cfg,/paragraph_text_sha256/);
+    writeFileSync(`articles/${slug}/article.html`,[
+      '<h2>段落ずれ</h2>',
+      '<p>新しく追加した段落です。</p>',
+      '<p>対象テキストです。最初の段落です。</p>',
+      '<p>別の段落です。</p>'
+    ].join('\n'));
+    assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/マーカー対象段落が一致しません/);
   } finally { cleanup(slug); }
 });
 

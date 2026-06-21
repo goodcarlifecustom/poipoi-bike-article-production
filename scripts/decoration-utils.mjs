@@ -50,6 +50,32 @@ export async function readDecorated(slug) {
   if (/<h1\b/i.test(html)) throw new Error('article-decorated.html にH1があります');
   return { file, html, hash: sha256(html) };
 }
+export const POSITIVE_MARKER_CLASS='swl-marker';
+export const POSITIVE_MARKER_STYLE_CLASS='mark_yellow';
+export const NEGATIVE_MARKER_CLASS='has-swl-deep-01-color';
+export function markerNodes(root){return [
+  ...els(root,'span').filter(n=>hasClass(n,POSITIVE_MARKER_CLASS)&&hasClass(n,POSITIVE_MARKER_STYLE_CLASS)),
+  ...els(root,'mark').filter(n=>hasClass(n,NEGATIVE_MARKER_CLASS)),
+];}
+export function validateMarkerPlacement(root){
+  const errors=[];
+  const markers=markerNodes(root);
+  for(const m of markers){
+    if(!text(m).trim()) errors.push('空マーカー');
+    if(isIn(root,m,n=>['a','li','ul','ol','table','thead','tbody','tr','td','th','h1','h2','h3','h4','h5','h6'].includes(n.tagName)||/cta/i.test(attr(n,'class')))) errors.push('禁止箇所のマーカー');
+    if((m.childNodes||[]).some(c=>markerNodes(c).length>0)) errors.push('マーカー入れ子');
+  }
+  for(const h of [...els(root,'h2'),...els(root,'h3')]){
+    const nodes=sectionNodes(root,h);
+    const scope=h.tagName==='h2'?nodes.slice(0,nodes.findIndex(n=>n.tagName==='h3')>=0?nodes.findIndex(n=>n.tagName==='h3'):nodes.length):nodes;
+    const paragraphs=scope.filter(n=>n.tagName==='p'&&!isIn(root,n,x=>hasClass(x,'swell-block-capbox')||['li','ul','ol','table','thead','tbody','tr','td','th'].includes(x.tagName))&&text(n).trim());
+    if(!paragraphs.length) continue;
+    const count=paragraphs.reduce((sum,p)=>sum+markerNodes(p).length,0);
+    if(count===0) errors.push(`本文マーカーなし: ${text(h).trim()}`);
+    if(count>=3) errors.push(`マーカー過多: ${text(h).trim()}`);
+  }
+  return errors;
+}
 export function validateDecoratedHtml(html) {
   const errors = [];
   const ids = [...html.matchAll(/id=["']([^"']+)["']/gi)].map((m) => m[1]);
@@ -58,8 +84,7 @@ export function validateDecoratedHtml(html) {
   for (const href of [...html.matchAll(/href=["']#([^"']*)["']/gi)].map((m) => m[1])) { if (!href) errors.push('空のアンカーリンクがあります'); else if (!seen.has(href)) errors.push(`存在しないページ内アンカーがあります: #${href}`); }
   if (/href=["']#["']/i.test(html) || /href=["']["']/i.test(html)) errors.push('空のhrefがあります');
   if ((html.match(/swell-block-capbox|cap_box/g) || []).length && !/cap_box_content/.test(html)) errors.push('capboxの本文領域が見つかりません');
-  for (const m of html.matchAll(/<span\b[^>]*class=["'][^"']*swl-marker[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi)) if (!m[1].replace(/<[^>]+>/g, '').trim()) errors.push('空のマーカーがあります');
-  for (const m of html.matchAll(/<mark\b[^>]*class=["'][^"']*has-swl-deep-01-color[^"']*["'][^>]*>([\s\S]*?)<\/mark>/gi)) if (!m[1].replace(/<[^>]+>/g, '').trim()) errors.push('空のmarkがあります');
+  errors.push(...validateMarkerPlacement(parseFragment(html)));
   return errors;
 }
 export async function writeDecorationManifest(slug) {
