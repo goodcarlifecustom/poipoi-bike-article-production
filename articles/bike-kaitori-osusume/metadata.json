@@ -30,10 +30,13 @@
   "target_word_count": 9000,
   "status": "draft",
   "post_to_wp": true,
-  "wordpress_draft_id": null,
-  "wordpress_draft_url": null,
+  "wordpress_draft_id": 29459,
+  "wordpress_draft_url": "https://poi-poi.co.jp/bike/wp-admin/post.php?post=29459&action=edit",
   "created_at": "2026-06-21T06:50:49Z",
   "updated_at": "2026-06-21T06:50:49Z",
   "research_date": "2026-06-21",
-  "notes": "ユーザーの明示依頼によりpost_to_wpをtrueへ変更。WordPress投稿は安全なdraft固定コマンドで実施する。"
+  "notes": "ユーザーの明示依頼によりpost_to_wpをtrueへ変更。WordPress投稿は安全なdraft固定コマンドで実施する。",
+  "wordpress_status": "draft",
+  "wordpress_last_synced_at": "2026-06-22T01:12:48.713Z",
+  "wordpress_content_sha256": "51c9f3d732e00bee941305b89a8b3ec8fbcd5cc71a7fcbeff0ecfd185c138f04"
 }

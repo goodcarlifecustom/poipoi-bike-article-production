@@ -191,12 +191,12 @@ test('paragraph index drift fails instead of marking another paragraph',()=>{
   } finally { cleanup(slug); }
 });
 
-test('new article template enables decoration config without changing WordPress posting defaults',()=>{
+test('new article template enables decoration config with default WordPress draft posting enabled',()=>{
   const slug='template-decoration-test'; cleanup(slug);
   try {
     sh(['run','create','--','--main-keyword','テンプレート バイク','--related-keywords','テンプレート バイク 買取','--slug',slug]);
     assert.equal(JSON.parse(readFileSync(`articles/${slug}/decoration.json`)).enabled,true);
-    assert.match(readFileSync(`articles/${slug}/input.yml`,'utf8'),/post_to_wp: false/);
+    assert.match(readFileSync(`articles/${slug}/input.yml`,'utf8'),/post_to_wp: true/);
   } finally { cleanup(slug); }
 });
 

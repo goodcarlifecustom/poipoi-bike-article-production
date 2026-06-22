@@ -20,7 +20,7 @@ test('related_keywords array/comma normalization and duplicates', () => {
 test('wordpress_draft conversion and default', () => {
   assert.equal(postToWpFromInputs({ wordpressDraft: 'true', postToWp: 'false' }), true);
   assert.equal(postToWpFromInputs({ wordpressDraft: undefined, postToWp: 'true' }), true);
-  assert.equal(postToWpFromInputs({}), false);
+  assert.equal(postToWpFromInputs({}), true);
 });
 
 test('slug generation', () => { assert.equal(slugFromKeyword('CTN バイク買取 評判'), 'ctn-bike-kaitori-reviews'); });

@@ -1,6 +1,6 @@
 # 06 WordPress下書き投稿ルール
 
-`post_to_wp: true` かつ `metadata.status: draft` の場合のみ、明示確認付きで `npm run wp:draft -- --slug {slug} --confirm` を実行する。公開、予約、private、pending への変更は禁止し、送信payloadの `status` はコード上で常に `draft` に固定する。
+`post_to_wp: true` かつ `metadata.status: draft` の場合のみ、通常の新規記事完了処理では `npm run check -- --slug {slug}` のPASS後に `npm run check:decoration`、`npm run wp:doctor`、`npm run wp:draft -- --slug {slug} --confirm --adopt-existing` を自動実行する。`npm run finish -- --slug {slug}` も同じ完了処理を実行する。個別実行時も明示確認付きで `npm run wp:draft -- --slug {slug} --confirm` を実行する。公開、予約、private、pending への変更は禁止し、送信payloadの `status` はコード上で常に `draft` に固定する。
 
 ## 環境変数
 
@@ -37,7 +37,7 @@ HTTPSサイトだけを原則許可し、localhost等の開発環境以外のHTT
 1. `metadata.wordpress_draft_id` がある場合はその投稿を取得し、statusがdraftなら同じIDを更新する。
 2. IDがない場合は同一slugを検索する。
 3. 同一slugの公開済み投稿があれば更新も新規作成もせず停止する。
-4. 同一slugの下書きが見つかった場合は自動採用せず、`--adopt-existing` が明示された場合のみ採用する。
+4. 同一slugの下書きが見つかった場合は、通常の新規記事完了処理では `--adopt-existing` を付けて既存draftを更新する。個別実行では `--adopt-existing` が明示された場合のみ採用する。
 5. 同一slugが複数件あれば停止する。
 
 ネットワーク切断等でmetadata更新前にWordPress側へ作成済みとなった場合も、次回実行時にslug検索で検出して重複作成を避ける。

@@ -1,8 +1,12 @@
 import { readFile, writeFile, stat, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { execSync } from 'node:child_process';
 import { argvValue, isUnresolved, parseList, parseScalar } from './workflow-utils.mjs';
+import { redact } from './wordpress-utils.mjs';
+const execFileAsync = promisify(execFile);
 
 function visibleTextLength(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--([\s\S]*?)-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, '').length; }
 function scanRepo(pattern) { try { return execSync(`rg -n "${pattern}" . -g '!node_modules' -g '!.git'`, { encoding: 'utf8' }).trim(); } catch { return ''; } }
@@ -121,3 +125,22 @@ if (metadata.post_to_wp === false) pass('post_to_wp:false のためWordPress環�
 else { for (const k of ['WP_SITE_URL','WP_USERNAME','WP_APPLICATION_PASSWORD']) if (!process.env[k]) results.push(`- WARN: post_to_wp:true ですが ${k} が未設定です（投稿コマンド実行時に必須）`); pass('WordPress投稿ステータスはwp:draftでdraft固定です'); }
 const report = `# 品質チェックレポート\n\n- slug: ${slug}\n- result: ${ok ? 'PASS' : 'FAIL'}\n\n## 詳細\n\n${results.join('\n')}\n`;
 await writeFile(path.join(dir, 'check-report.md'), report, 'utf8'); console.log(report); if (!ok) process.exit(1);
+
+if (metadata.post_to_wp === true && process.env.ARTICLE_CHECK_SKIP_WP_AUTOSYNC !== '1') {
+  const env = { ...process.env, ARTICLE_CHECK_SKIP_WP_AUTOSYNC: '1' };
+  async function runAuto(label, args) {
+    console.log(`\n[${label}] npm ${args.join(' ')}`);
+    try {
+      const { stdout, stderr } = await execFileAsync('npm', args, { env, maxBuffer: 16 * 1024 * 1024 });
+      if (stdout) process.stdout.write(stdout);
+      if (stderr) process.stderr.write(stderr);
+    } catch (error) {
+      const out = `${error.stdout || ''}${error.stderr || ''}${error.message || ''}`;
+      console.error(redact(`${label} failed\n${out}`));
+      process.exit(1);
+    }
+  }
+  await runAuto('decoration check', ['run', 'check:decoration', '--', '--slug', slug]);
+  await runAuto('wordpress doctor', ['run', 'wp:doctor']);
+  await runAuto('wordpress draft', ['run', 'wp:draft', '--', '--slug', slug, '--confirm', '--adopt-existing']);
+}

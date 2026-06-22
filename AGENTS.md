@@ -12,7 +12,7 @@
 
 ## 標準工程
 
-`rules/00-keyword-analysis.md`、`rules/01-heading-research.md`、`rules/02-heading-plan-generation.md`、`rules/03-article-generation.md`、`rules/04-external-links.md`、`rules/05-swell-decoration.md`、`rules/99-quality-check.md` の順に実行する。`post_to_wp: true` の場合のみ `rules/06-wordpress-draft.md` を最後に実行する。
+`rules/00-keyword-analysis.md`、`rules/01-heading-research.md`、`rules/02-heading-plan-generation.md`、`rules/03-article-generation.md`、`rules/04-external-links.md`、`rules/05-swell-decoration.md`、`rules/99-quality-check.md` の順に実行する。新規記事の通常生成入口では、完了時の `npm run check -- --slug {slug}` がPASSした後に `post_to_wp: true` の記事だけ `npm run check:decoration`、`npm run wp:doctor`、`npm run wp:draft` を自動実行する。手動の完了処理は `npm run finish -- --slug {slug}` を使い、同じ順序を重複投稿なしで実行する。`post_to_wp: true` の場合のみ `rules/06-wordpress-draft.md` を最後に実行する。
 
 ## 記事制作方針
 

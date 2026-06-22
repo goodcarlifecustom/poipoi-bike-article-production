@@ -7,12 +7,13 @@
     "create": "node scripts/create-article-dir.mjs",
     "extract": "node scripts/extract-headings.mjs",
     "check": "node scripts/check-article.mjs",
-    "post": "node scripts/post-wp-draft.mjs",
+    "post": "node scripts/post-wordpress-draft.mjs --confirm --adopt-existing",
     "test": "node --test",
     "decorate": "node scripts/decorate-article.mjs",
     "check:decoration": "node scripts/check-decoration.mjs",
     "wp:draft": "node scripts/post-wordpress-draft.mjs",
-    "wp:doctor": "node scripts/check-wordpress-connection.mjs"
+    "wp:doctor": "node scripts/check-wordpress-connection.mjs",
+    "finish": "node scripts/finish-new-article.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

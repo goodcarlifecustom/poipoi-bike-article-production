@@ -67,7 +67,7 @@ export function normalizeBoolean(value, fallback = false) {
 }
 
 export function postToWpFromInputs({ wordpressDraft, postToWp }) {
-  return normalizeBoolean(wordpressDraft !== undefined ? wordpressDraft : postToWp, false);
+  return normalizeBoolean(wordpressDraft !== undefined ? wordpressDraft : postToWp, true);
 }
 
 export function yamlString(value) { return `"${String(value ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`; }
