@@ -11,8 +11,23 @@ const root=process.cwd();
 const execFileAsync = promisify(execFile);
 function run(args,opts={}){return execFileSync('node',args,{cwd:root,encoding:'utf8',stdio:'pipe',...opts});}
 async function runAsync(args,opts={}){const r=await execFileAsync('node',args,{cwd:root,encoding:'utf8',maxBuffer:1024*1024,...opts}); return r.stdout;}
-function tmpArticle(slug,postToWp=true){const d=path.join(root,'articles',slug); rmSync(d,{recursive:true,force:true}); mkdirSync(d,{recursive:true}); const html='<!-- wp:paragraph --><p><span class="swl-marker mark_yellow">重要です</span>。</p><!-- /wp:paragraph -->\n<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">本文です。</span></p>';
- writeFileSync(path.join(d,'article-decorated.html'),html); writeFileSync(path.join(d,'metadata.json'),JSON.stringify({title:'テスト記事',slug,target_keyword:'x',related_keywords:['y'],status:'draft',post_to_wp:postToWp,wordpress_draft_id:null,wordpress_draft_url:null},null,2)); return d;}
+function tmpArticle(slug,postToWp=true){const d=path.join(root,'articles',slug); rmSync(d,{recursive:true,force:true}); mkdirSync(d,{recursive:true}); const html=`<!-- wp:paragraph -->
+<p><span class="swl-marker mark_yellow">重要です</span>。</p>
+<!-- /wp:paragraph -->
+<!-- wp:list -->
+<p>この記事でわかること</p>
+<ul class="wp-block-list">
+<!-- wp:list-item -->
+<li><a href="#sec-01">見出し</a></li>
+<!-- /wp:list-item -->
+</ul>
+<!-- /wp:list -->
+<!-- wp:heading {"level":2,"anchor":"sec-01"} -->
+<h2 class="wp-block-heading" id="sec-01">見出し</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p><span class="swl-marker mark_yellow">本文です。</span></p>
+<!-- /wp:paragraph -->`; writeFileSync(path.join(d,'article-decorated.html'),html); writeFileSync(path.join(d,'metadata.json'),JSON.stringify({title:'テスト記事',slug,target_keyword:'x',related_keywords:['y'],status:'draft',post_to_wp:postToWp,wordpress_draft_id:null,wordpress_draft_url:null},null,2)); return d;}
 async function server(handler){const s=http.createServer(handler); await new Promise(r=>s.listen(0,'127.0.0.1',r)); return {url:`http://127.0.0.1:${s.address().port}`, close:()=>new Promise(r=>s.close(r))};}
 
 test('env validation rejects missing and production http',()=>{

@@ -1,10 +1,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { argvValue, DEFAULT_CATEGORY, DEFAULT_TARGET_MEDIA, loadInput, normalizeRelatedKeywords, normalizeSpaces, parseList, parseScalar, postToWpFromInputs, slugFromKeyword, yamlList, yamlString } from './workflow-utils.mjs';
+import { argvValue, DEFAULT_CATEGORY, loadInput, normalizeRelatedKeywords, normalizeSpaces, parseList, parseScalar, postToWpFromInputs, slugFromKeyword, yamlList, yamlString } from './workflow-utils.mjs';
 
 function valueFrom(inputText, cliName, yamlKey = cliName) { return argvValue(process.argv, cliName) ?? parseScalar(inputText, yamlKey); }
 function mustSlug(slug) { return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug); }
+function requiredValue(inputText, key, label = key) { const value = normalizeSpaces(valueFrom(inputText, key) ?? ''); if (!value) { console.error(`${label} is required.`); process.exit(1); } return value; }
+function requiredInt(inputText, key) { const raw = normalizeSpaces(valueFrom(inputText, key) ?? ''); if (!/^\d+$/.test(raw)) { console.error(`${key} is required and must be a number.`); process.exit(1); } const n = Number(raw); if (!Number.isSafeInteger(n) || n <= 0) { console.error(`${key} must be a positive safe integer.`); process.exit(1); } return n; }
 
 const inputFile = argvValue(process.argv, 'input');
 const inputText = await loadInput(inputFile);
@@ -13,8 +15,20 @@ if (!mainKeyword) { console.error('main_keyword is required. keyword remains sup
 const relatedRaw = argvValue(process.argv, 'related_keywords') ?? argvValue(process.argv, 'related-keywords') ?? parseList(inputText, 'related_keywords');
 const relatedKeywords = normalizeRelatedKeywords(relatedRaw, mainKeyword);
 if (!relatedKeywords.length) { console.error('related_keywords is required as a YAML list or comma-separated string.'); process.exit(1); }
-const wordpressDraft = argvValue(process.argv, 'wordpress_draft') ?? argvValue(process.argv, 'wordpress-draft') ?? parseScalar(inputText, 'wordpress_draft');
-const postToWp = postToWpFromInputs({ wordpressDraft, postToWp: parseScalar(inputText, 'post_to_wp') ?? argvValue(process.argv, 'post_to_wp') });
+const wordpressDraft = argvValue(process.argv, 'wordpress_draft') ?? argvValue(process.argv, 'wordpress-draft') ?? parseScalar(inputText, 'wordpress_draft') ?? 'true';
+let postToWp;
+try { postToWp = postToWpFromInputs({ wordpressDraft, postToWp: parseScalar(inputText, 'post_to_wp') ?? argvValue(process.argv, 'post_to_wp') }); }
+catch (e) { console.error(e.message); process.exit(1); }
+const targetMedia = requiredValue(inputText, 'target_media');
+const articleType = requiredValue(inputText, 'article_type');
+const persona = requiredValue(inputText, 'persona', '想定読者/persona');
+const articlePurpose = requiredValue(inputText, 'article_purpose');
+const minWordCount = requiredInt(inputText, 'min_word_count');
+const targetWordCount = requiredInt(inputText, 'target_word_count');
+const maxWordCount = requiredInt(inputText, 'max_word_count');
+if (!(minWordCount <= targetWordCount && targetWordCount <= maxWordCount)) { console.error('word counts must satisfy min_word_count <= target_word_count <= max_word_count.'); process.exit(1); }
+const status = normalizeSpaces(valueFrom(inputText, 'status') ?? 'draft');
+if (status !== 'draft') { console.error('status is managed by this workflow and must be draft.'); process.exit(1); }
 const providedSlug = normalizeSpaces(valueFrom(inputText, 'slug') || '');
 const slug = providedSlug || slugFromKeyword(mainKeyword) || 'auto';
 if (slug === 'auto') { console.error('Could not generate a meaningful slug. Provide --slug after keyword analysis.'); process.exit(1); }
@@ -25,22 +39,20 @@ await mkdir(path.dirname(dir), { recursive: true });
 await mkdir(dir, { recursive: false });
 const now = new Date().toISOString();
 const title = valueFrom(inputText, 'title') || 'auto';
-const targetWordCount = valueFrom(inputText, 'target_word_count') || 'auto';
 const category = valueFrom(inputText, 'category') || DEFAULT_CATEGORY;
-const targetMedia = valueFrom(inputText, 'target_media') || DEFAULT_TARGET_MEDIA;
 const referenceUrls = parseList(inputText, 'reference_urls');
 const notes = valueFrom(inputText, 'notes') || parseScalar(inputText, 'notes') || '';
 const inputYml = [
   `main_keyword: ${yamlString(mainKeyword)}`,
   'related_keywords:', yamlList(relatedKeywords),
-  'search_intent: auto', 'explicit_needs: auto', 'latent_needs: auto', 'persona: auto', 'article_type: auto',
-  `title: ${yamlString(title)}`, `slug: ${yamlString(slug)}`, 'meta_description: auto', `target_word_count: ${targetWordCount}`,
+  'search_intent: auto', 'explicit_needs: auto', 'latent_needs: auto', `persona: ${yamlString(persona)}`, `article_type: ${yamlString(articleType)}`, `article_purpose: ${yamlString(articlePurpose)}`,
+  `title: ${yamlString(title)}`, `slug: ${yamlString(slug)}`, 'meta_description: auto', `min_word_count: ${minWordCount}`, `target_word_count: ${targetWordCount}`, `max_word_count: ${maxWordCount}`,
   `category: ${yamlString(category)}`, `target_media: ${yamlString(targetMedia)}`,
   'reference_urls:', yamlList(referenceUrls),
-  `post_to_wp: ${postToWp ? 'true' : 'false'}`, 'status: draft', `created_at: ${yamlString(now)}`, `notes: ${yamlString(notes)}`
+  `wordpress_draft: ${postToWp ? 'true' : 'false'}`, `post_to_wp: ${postToWp ? 'true' : 'false'}`, 'status: draft', `created_at: ${yamlString(now)}`, `notes: ${yamlString(notes)}`
 ].join('\n') + '\n';
 await writeFile(path.join(dir, 'input.yml'), inputYml, 'utf8');
-const metadata = { title: title === 'auto' ? null : title, slug, meta_description: null, target_keyword: mainKeyword, related_keywords: relatedKeywords, search_intent: null, persona: null, article_type: null, target_word_count: targetWordCount === 'auto' ? null : Number(targetWordCount), status: 'draft', post_to_wp: postToWp, wordpress_draft_id: null, wordpress_draft_url: null, created_at: now, updated_at: now, research_date: null, notes };
+const metadata = { title: title === 'auto' ? null : title, slug, meta_description: null, target_keyword: mainKeyword, related_keywords: relatedKeywords, search_intent: null, persona, article_type: articleType, article_purpose: articlePurpose, min_char_count: minWordCount, target_char_count: targetWordCount, max_char_count: maxWordCount, min_word_count: minWordCount, target_word_count: targetWordCount, max_word_count: maxWordCount, status: 'draft', wordpress_draft: postToWp, post_to_wp: postToWp, wordpress_draft_id: null, wordpress_draft_url: null, created_at: now, updated_at: now, research_date: null, notes };
 await writeFile(path.join(dir, 'metadata.json'), JSON.stringify(metadata, null, 2) + '\n', 'utf8');
 const decoration = { version: 1, enabled: true, outline: { enabled: true, title: '【この記事でわかること】' }, section_navigation: { enabled: true, minimum_h3: 3, default_title: 'この章でわかること', overrides: [] }, list_boxes: [], markers: [] };
 await writeFile(path.join(dir, 'decoration.json'), JSON.stringify(decoration, null, 2) + '\n', 'utf8');

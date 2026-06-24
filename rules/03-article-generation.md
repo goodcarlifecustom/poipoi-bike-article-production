@@ -1,6 +1,10 @@
 # 03 記事生成
 
-`input.yml`、`metadata.json`、`research.md`、`heading-plan.md` をもとに `draft.md` と `article.html` を作成する。
+`input.yml`、`metadata.json`、`research.md`、`heading-plan.md` をもとに作成する。新規記事の完成本文はMarkdownではなく、WordPressコードエディターへ貼り付けたときにブロックとして認識されるGutenbergブロックマークアップを `article.html` へ出力する。`draft.md` は作業用メモとして残してよいが、完成本文・WordPress送信用本文として扱わない。
+
+## 必須入力
+
+新規記事生成を開始する前に、`target_media`、`article_type`、`main_keyword`、`related_keywords`、`persona`、`article_purpose`、`min_word_count`、`target_word_count`、`max_word_count`（互換名。日本語の可視本文文字数として扱い、metadataでは `min_char_count`、`target_char_count`、`max_char_count` も保存）、`wordpress_draft`、`post_to_wp` が確定していることを確認する。文字数は必ず `min_word_count <= target_word_count <= max_word_count` とし、未入力・数字以外・大小関係不正の場合は生成を開始しない。デフォルトは `wordpress_draft: true`、`post_to_wp: true`、`status: draft` を自動設定する。
 
 ## 本文構成
 
@@ -29,4 +33,13 @@
 
 ## HTML
 
-HTMLはWordPressブロックエディタで扱いやすい `p,h2,h3,h4,ul,ol,li,table,thead,tbody,tr,th,td,a,strong` を中心にする。比較が必要な場合のみ表を使い、確認できない情報で表を作らない。
+完成本文はWordPress標準ブロックを使ったGutenbergブロックマークアップにする。通常の段落、見出し、リスト、表、画像を安易に `wp:html` へ入れず、記事全体を1つの `wp:html` ブロックにしない。
+
+- 段落: `<!-- wp:paragraph -->` と `<!-- /wp:paragraph -->` で `<p>本文</p>` を囲む。
+- H2: `<!-- wp:heading {"level":2,"anchor":"sec-01"} -->` と `<!-- /wp:heading -->` で `<h2 class="wp-block-heading" id="sec-01">見出し</h2>` を囲む。
+- H3: `<!-- wp:heading {"level":3} -->` と `<!-- /wp:heading -->` で `<h3 class="wp-block-heading">見出し</h3>` を囲む。
+- リスト: `<!-- wp:list -->` の中に `<ul class="wp-block-list">` と `<!-- wp:list-item -->` で囲んだ `<li>` を置く。
+- 表: `<!-- wp:table -->` の中に `<figure class="wp-block-table"><table><tbody>...</tbody></table></figure>` を置く。
+- 画像: `<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->` の中に `<figure class="wp-block-image size-large"><img src="実在URL" alt="代替テキスト"/></figure>` を置き、架空のWordPressメディアIDを付けない。
+
+導入文の後、最初のH2より前に「この記事でわかること」を置き、主要な全H2へのアンカーリンクを設定する。H2のidは `sec-01`、`sec-02` のように安定付与し、リンクの `href` とH2の `id`、リンクテキストとH2文言を一致させる。比較表または要点表、選び方、詳細解説、注意点、FAQ、まとめを検索意図に合わせて自然に含める。
