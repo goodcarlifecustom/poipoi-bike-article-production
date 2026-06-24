@@ -38,5 +38,10 @@
   "notes": "ユーザーの明示依頼によりpost_to_wpをtrueへ変更。WordPress投稿は安全なdraft固定コマンドで実施する。",
   "wordpress_status": "draft",
   "wordpress_last_synced_at": "2026-06-22T01:12:48.713Z",
-  "wordpress_content_sha256": "51c9f3d732e00bee941305b89a8b3ec8fbcd5cc71a7fcbeff0ecfd185c138f04"
+  "wordpress_content_sha256": "51c9f3d732e00bee941305b89a8b3ec8fbcd5cc71a7fcbeff0ecfd185c138f04",
+  "min_char_count": 8000,
+  "target_char_count": 11000,
+  "max_char_count": 14000,
+  "article_purpose": "バイク買取のおすすめ候補、査定方法、比較基準、必要書類、注意点を整理し、読者が自分に合う売却先を判断できるようにする。",
+  "wordpress_draft": true
 }

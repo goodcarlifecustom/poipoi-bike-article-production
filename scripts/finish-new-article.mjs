@@ -40,9 +40,17 @@ async function main() {
       return;
     }
 
+    const hasWpEnv = process.env.FINISH_ENABLE_WP_SYNC === '1' && Boolean((process.env.WP_SITE_URL || process.env.WP_REST_ROOT) && process.env.WP_USERNAME && (process.env.WP_APPLICATION_PASSWORD || process.env.WP_APP_PASSWORD));
+    if (!hasWpEnv) {
+      await run('wordpress draft dry-run', ['run', 'wp:draft', '--', '--slug', slug, '--dry-run']);
+      console.log(`
+Completed local-only article workflow for ${slug}; WordPress draft sync skipped because WP env is not set.`);
+      return;
+    }
     await run('wordpress doctor', ['run', 'wp:doctor']);
     await run('wordpress draft', ['run', 'wp:draft', '--', '--slug', slug, '--confirm', '--adopt-existing']);
-    console.log(`\nCompleted article workflow and WordPress draft sync for ${slug}`);
+    console.log(`
+Completed article workflow and WordPress draft sync for ${slug}`);
   } catch (error) {
     await writeFailure(slug, error.message);
     console.error(redact(error.message));

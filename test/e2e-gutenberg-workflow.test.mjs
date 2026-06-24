@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
+import { parse } from '@wordpress/block-serialization-default-parser';
 
 const execFileAsync = promisify(execFile);
 const root = process.cwd();
@@ -86,6 +87,11 @@ test('E2E normalizes job, decorates, checks, and posts mocked draft payload safe
     npm(['run', 'check', '--', '--slug', slug], { ARTICLE_CHECK_SKIP_WP_AUTOSYNC: '1' });
     await node(['scripts/post-wordpress-draft.mjs', '--slug', slug, '--confirm'], { WP_SITE_URL: srv.url, WP_REST_ROOT: '', WP_USERNAME: 'u', WP_APPLICATION_PASSWORD: 'p', WP_APP_PASSWORD: '', WP_DRAFT_SKIP_PRECHECKS: '1' });
     assert.equal(captured.status, 'draft');
+    assert.equal(captured.content, readFileSync(path.join(dir, 'article-decorated.html'), 'utf8'));
+    const sentBlocks = parse(captured.content).map((b) => b.blockName);
+    const rawBlocks = parse(decorated).map((b) => b.blockName);
+    assert.deepEqual(sentBlocks, rawBlocks);
+    assert.ok(parse(captured.content).filter((b) => !b.blockName).every((b) => !String(b.innerHTML || '').trim()));
     assert.match(captured.content, /<!-- wp:/);
     assert.doesNotMatch(captured.content, /^---/m);
     assert.doesNotMatch(captured.content, /metadata|作業ログ|rendered/i);
