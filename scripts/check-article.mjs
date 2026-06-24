@@ -6,6 +6,7 @@ import { promisify } from 'node:util';
 import { execSync } from 'node:child_process';
 import { argvValue, isUnresolved, parseList, parseScalar } from './workflow-utils.mjs';
 import { redact } from './wordpress-utils.mjs';
+import { validateGutenbergContent, visibleCharCount } from './gutenberg-utils.mjs';
 const execFileAsync = promisify(execFile);
 
 function visibleTextLength(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--([\s\S]*?)-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, '').length; }
@@ -82,12 +83,19 @@ if (!mainKeyword) await fail('main_keyword がありません'); else pass('main
 if (!Array.isArray(related) || related.length === 0) await fail('related_keywords が配列として存在しません'); else pass('related_keywords 配列を確認しました');
 for (const key of ['title','slug','meta_description','search_intent','persona','article_type','target_word_count']) { if (isUnresolved(metadata[key])) await fail(`metadata.json の ${key} が未確定です`); else pass(`${key} は生成済みです`); }
 if (metadata.status !== 'draft') await fail('metadata.json の status が draft ではありません'); else pass('status: draft を確認しました');
+const minCount = Number(metadata.min_char_count ?? metadata.min_word_count);
+const targetCount = Number(metadata.target_char_count ?? metadata.target_word_count);
+const maxCount = Number(metadata.max_char_count ?? metadata.max_word_count);
+for (const [key, value] of [['min_char_count/min_word_count', minCount], ['target_char_count/target_word_count', targetCount], ['max_char_count/max_word_count', maxCount]]) { if (!Number.isSafeInteger(value) || value <= 0) await fail(`metadata.json の ${key} が正の数値ではありません`); else pass(`${key} を確認しました`); }
+if (minCount > targetCount || targetCount > maxCount) await fail('文字数設定が min <= target <= max を満たしていません'); else pass('文字数設定の大小関係を確認しました');
+if (metadata.wordpress_draft !== undefined && metadata.post_to_wp !== undefined && metadata.wordpress_draft !== metadata.post_to_wp) await fail('wordpress_draft と post_to_wp が矛盾しています'); else pass('wordpress_draft と post_to_wp の整合性を確認しました');
+for (const key of ['target_media','article_type','persona','article_purpose']) { const v = key === 'target_media' ? parseScalar(input, key) : (metadata[key] || parseScalar(input, key)); if (isUnresolved(v)) await fail(`${key} が未入力です`); else pass(`${key} を確認しました`); }
 if (typeof metadata.post_to_wp !== 'boolean') await fail('metadata.json の post_to_wp がbooleanではありません'); else pass('post_to_wp はbooleanです');
 if (metadata.slug && metadata.slug !== slug) await fail('slug がパスとmetadata.jsonで一致しません'); else pass('slug は一致しています');
 if (metadata.target_keyword && mainKeyword && metadata.target_keyword !== mainKeyword) await fail('メインキーワードがファイル間で一致しません'); else pass('メインキーワードは一致しています');
 for (const f of ['article.html','article-linked.html','article-decorated.html']) {
   if (!existsSync(path.join(dir, f))) continue; const html = await readFile(path.join(dir, f), 'utf8');
-  if (!html.trim()) continue; if (/<h1\b/i.test(html)) await fail(`${f} にH1があります`); else pass(`${f} にH1はありません`);
+  if (!html.trim()) continue; const gb = validateGutenbergContent(html, { title: metadata.title }); if (!gb.ok) await fail(`${f} のGutenberg検証に失敗しました: ${gb.errors.join(' / ')}`); else pass(`${f} はGutenbergブロックとして有効です`); if (/<h1\b/i.test(html)) await fail(`${f} にH1があります`); else pass(`${f} にH1はありません`);
   const hs = headings(html);
   const h3Count = hs.filter((h) => h.level === 3).length;
   if (hs.length >= 8 && h3Count === 0) await fail(`${f} は見出しが8件以上あるのにH3が0件です`, '主要章をH2、章内項目をH3に戻してください');
@@ -114,8 +122,10 @@ for (const f of ['article.html','article-linked.html','article-decorated.html'])
   }
 }
 const decorated = existsSync(path.join(dir, 'article-decorated.html')) ? await readFile(path.join(dir, 'article-decorated.html'), 'utf8') : '';
-const len = visibleTextLength(decorated); const target = Number(metadata.target_word_count || 0);
-if (target && (len < target * 0.5 || len > target * 1.6)) await fail('本文文字数が目標文字数から大きく外れています', `目標 ${target} に対し本文 ${len}`); else if (target) pass('本文文字数は目標から大きく外れていません');
+const len = visibleCharCount(decorated); const target = targetCount;
+if (minCount && len < minCount) await fail('本文文字数が最低文字数を下回っています', `最低 ${minCount} に対し本文 ${len}`);
+else if (maxCount && len > maxCount) await fail('本文文字数が上限文字数を上回っています', `上限 ${maxCount} に対し本文 ${len}`);
+else if (target && (len < target * 0.5 || len > target * 1.6)) await fail('本文文字数が目標文字数から大きく外れています', `目標 ${target} に対し本文 ${len}`); else if (target) pass('本文文字数は目標から大きく外れていません');
 if (/https?:\/\/[^"'<>\s]+/.test(decorated.replace(/<a\b[^>]*href=["'][^"']+["'][^>]*>/gi, '<a>'))) await fail('外部URLのベタ書きがあります'); else pass('外部URLのベタ書きは検出されません');
 try { const trackedEnv = execSync('git status --short .env', { encoding: 'utf8' }).trim(); if (trackedEnv) await fail('.env がGitの変更対象です'); else pass('.env はコミット対象ではありません'); } catch { results.push('- WARN: git statusで.envを確認できませんでした'); }
 const secretPattern = 'WP_APP_PASSWORD=.+|WP_APPLICATION_PASSWORD=.+|Authori' + 'zation:|Ba' + 'sic [A-Za-z0-9+/=]{20,}|_wp' + 'nonce|preview_' + 'nonce';

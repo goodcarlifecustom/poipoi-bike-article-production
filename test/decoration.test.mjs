@@ -5,7 +5,8 @@ import { validateDecoratedHtml } from '../scripts/decoration-utils.mjs';
 import { cpSync, readFileSync, writeFileSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 const fixtureRoot = 'test/fixtures/decoration-article';
-function sh(args){return execFileSync('npm',args,{encoding:'utf8',stdio:'pipe'});}
+const requiredCreateArgs=['--target-media','https://poi-poi.co.jp/bike/','--article-type','テスト','--persona','テスト読者','--article-purpose','テスト目的','--min-word-count','100','--target-word-count','200','--max-word-count','10000'];
+function sh(args){const patched=args[0]==='run'&&args[1]==='create'?args.concat(requiredCreateArgs):args; return execFileSync('npm',patched,{encoding:'utf8',stdio:'pipe'});}
 function prepare(slug){rmSync(`articles/${slug}`,{recursive:true,force:true}); mkdirSync(`articles/${slug}`,{recursive:true}); cpSync(fixtureRoot,`articles/${slug}`,{recursive:true});}
 function cleanup(slug){rmSync(`articles/${slug}`,{recursive:true,force:true});}
 
@@ -205,4 +206,47 @@ test('marker validation rejects markers ending inside Japanese or ASCII words',(
   assert.match(validateDecoratedHtml(html).join('\n'),/マーカー終了位置が語句の途中/);
   const ok='<h2 id="a">見出し</h2><p><span class="swl-marker mark_yellow">重要です</span>。</p>';
   assert.doesNotMatch(validateDecoratedHtml(ok).join('\n'),/語句の途中/);
+});
+
+test('decorate preserves existing Gutenberg block attributes, nesting, custom blocks and wp:html',()=>{
+  const slug='gutenberg-preserve-test'; cleanup(slug);
+  try {
+    sh(['run','create','--','--main-keyword','保持 テスト','--related-keywords','保持 テスト 買取','--slug',slug]);
+    const source=[
+      '<!-- wp:group {"className":"outer","style":{"spacing":{"padding":"1rem"}},"backgroundColor":"white","textColor":"black"} -->',
+      '<div class="wp-block-group outer has-white-background-color has-black-color">',
+      '<!-- wp:heading {"level":2,"anchor":"keep-anchor","className":"keep-class","align":"wide"} -->',
+      '<h2 class="wp-block-heading keep-class" id="keep-anchor">保持する見出し</h2>',
+      '<!-- /wp:heading -->',
+      '<!-- wp:paragraph -->',
+      '<p>保持する本文です。査定条件を同じ基準で比較することが重要です。</p>',
+      '<!-- /wp:paragraph -->',
+      '<!-- wp:columns {"align":"wide"} -->',
+      '<div class="wp-block-columns alignwide"><!-- wp:column {"width":"50%"} --><div class="wp-block-column" style="flex-basis:50%"><!-- wp:paragraph --><p>列の本文です。</p><!-- /wp:paragraph --></div><!-- /wp:column --></div>',
+      '<!-- /wp:columns -->',
+      '<!-- wp:loos/custom-block {"foo":"bar"} --><div class="custom">ショートコード[ad]</div><!-- /wp:loos/custom-block -->',
+      '<!-- wp:html --><div class="raw-html">## Markdown example <script>window.ad=true</script></div><!-- /wp:html -->',
+      '</div>',
+      '<!-- /wp:group -->',
+      '<!-- wp:heading {"level":2,"anchor":"summary"} -->',
+      '<h2 class="wp-block-heading" id="summary">まとめ</h2>',
+      '<!-- /wp:heading -->',
+      '<!-- wp:paragraph -->',
+      '<p>最後は落ち着いて確認しましょう。重要です。</p>',
+      '<!-- /wp:paragraph -->'
+    ].join('\n');
+    writeFileSync(`articles/${slug}/article.html`,source);
+    sh(['run','decorate','--','--slug',slug]);
+    const one=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    sh(['run','decorate','--','--slug',slug]);
+    const two=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
+    assert.equal(two,one);
+    assert.match(one,/<!-- wp:group \{"className":"outer","style":\{"spacing":\{"padding":"1rem"\}\},"backgroundColor":"white","textColor":"black"\} -->/);
+    assert.match(one,/<!-- wp:heading \{"level":2,"anchor":"keep-anchor","className":"keep-class","align":"wide"\} -->/);
+    assert.match(one,/<h2 class="wp-block-heading keep-class" id="keep-anchor">保持する見出し<\/h2>/);
+    assert.match(one,/<!-- wp:columns \{"align":"wide"\} -->/);
+    assert.match(one,/<!-- wp:column \{"width":"50%"\} -->/);
+    assert.match(one,/<!-- wp:loos\/custom-block \{"foo":"bar"\} -->/);
+    assert.match(one,/<!-- wp:html --><div class="raw-html">## Markdown example <script>window\.ad=true<\/script><\/div><!-- \/wp:html -->/);
+  } finally { cleanup(slug); }
 });

@@ -67,7 +67,12 @@ export function normalizeBoolean(value, fallback = false) {
 }
 
 export function postToWpFromInputs({ wordpressDraft, postToWp }) {
-  return normalizeBoolean(wordpressDraft !== undefined ? wordpressDraft : postToWp, true);
+  const hasWordPressDraft = wordpressDraft !== undefined && wordpressDraft !== null && wordpressDraft !== '';
+  const hasPostToWp = postToWp !== undefined && postToWp !== null && postToWp !== '';
+  const draftValue = hasWordPressDraft ? normalizeBoolean(wordpressDraft, true) : undefined;
+  const postValue = hasPostToWp ? normalizeBoolean(postToWp, true) : undefined;
+  if (hasWordPressDraft && hasPostToWp && draftValue !== postValue) throw new Error('wordpress_draft and post_to_wp must match when both are provided.');
+  return hasWordPressDraft ? draftValue : hasPostToWp ? postValue : true;
 }
 
 export function yamlString(value) { return `"${String(value ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`; }

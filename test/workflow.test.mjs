@@ -18,9 +18,10 @@ test('related_keywords array/comma normalization and duplicates', () => {
 });
 
 test('wordpress_draft conversion and default', () => {
-  assert.equal(postToWpFromInputs({ wordpressDraft: 'true', postToWp: 'false' }), true);
+  assert.equal(postToWpFromInputs({ wordpressDraft: 'true', postToWp: 'true' }), true);
   assert.equal(postToWpFromInputs({ wordpressDraft: undefined, postToWp: 'true' }), true);
   assert.equal(postToWpFromInputs({}), true);
+  assert.throws(() => postToWpFromInputs({ wordpressDraft: 'false', postToWp: 'true' }), /must match/);
 });
 
 test('slug generation', () => { assert.equal(slugFromKeyword('CTN バイク買取 評判'), 'ctn-bike-kaitori-reviews'); });
@@ -29,7 +30,7 @@ test('create reads main_keyword and related_keywords list, writes required files
   const dir = await mkdtemp(path.join(tmpdir(), 'workflow-'));
   try {
     await mkdir(path.join(dir,'jobs'));
-    await writeFile(path.join(dir,'jobs/in.yml'), 'main_keyword: "ネオクラシックバイク おすすめ"\nrelated_keywords:\n  - "ネオクラシックバイク 初心者"\n  - "ネオクラシックバイク 比較"\nwordpress_draft: false\n');
+    await writeFile(path.join(dir,'jobs/in.yml'), 'main_keyword: "ネオクラシックバイク おすすめ"\nrelated_keywords:\n  - "ネオクラシックバイク 初心者"\n  - "ネオクラシックバイク 比較"\nwordpress_draft: false\ntarget_media: \"https://poi-poi.co.jp/bike/\"\narticle_type: \"比較\"\npersona: \"初心者\"\narticle_purpose: \"選び方を理解してもらう\"\nmin_word_count: 1000\ntarget_word_count: 1500\nmax_word_count: 2000\n');
     await run(['--input','jobs/in.yml'], dir);
     const articleDir = path.join(dir,'articles/neo-classic-bike-recommended');
     assert.equal(existsSync(articleDir), true);
@@ -43,7 +44,7 @@ test('create reads main_keyword and related_keywords list, writes required files
 
 test('create supports comma related keywords and wordpress_draft true', async () => {
   const dir = await mkdtemp(path.join(tmpdir(), 'workflow-'));
-  try { await run(['--main-keyword','CTN バイク買取 評判','--related-keywords','CTN バイク買取 口コミ,CTN バイク買取 査定','--wordpress-draft','true'], dir);
+  try { await run(['--main-keyword','CTN バイク買取 評判','--related-keywords','CTN バイク買取 口コミ,CTN バイク買取 査定','--wordpress-draft','true','--target-media','https://poi-poi.co.jp/bike/','--article-type','評判','--persona','売却検討者','--article-purpose','評判の判断材料を示す','--min-word-count','1000','--target-word-count','1500','--max-word-count','2000'], dir);
     const input = await readFile(path.join(dir,'articles/ctn-bike-kaitori-reviews/input.yml'),'utf8');
     assert.match(input, /post_to_wp: true/); assert.match(input, /CTN バイク買取 口コミ/);
   } finally { await rm(dir,{recursive:true,force:true}); }
