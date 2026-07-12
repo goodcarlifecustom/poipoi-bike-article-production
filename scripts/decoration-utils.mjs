@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import * as parse5 from 'parse5';
+import { validateNoManualToc } from './toc-validation.mjs';
 export const CAP_TITLE_CLASS='cap_box_ttl';
 export function sha256(s){return crypto.createHash('sha256').update(s).digest('hex');}
 export async function loadDecorationConfig(dir){const p=path.join(dir,'decoration.json'); if(!existsSync(p)) throw new Error('decoration.json がありません'); const c=JSON.parse(await readFile(p,'utf8')); if(c.enabled!==true) throw new Error('decoration.enabled が true ではありません'); return c;}
@@ -31,7 +32,7 @@ export function capTitle(n){return hasClass(n,'swell-block-capbox')? text((n.chi
 export function stripGeneratedText(root){
  const parts=[]; function rec(n){
   if(hasClass(n,'cap_box_ttl')) return;
-  if(hasClass(n,'swell-block-capbox')&&['【この記事でわかること】','この章でわかること'].includes(capTitle(n))) return;
+  if(hasClass(n,'swell-block-capbox')&&['この記事でわかること','【この記事でわかること】'].includes(capTitle(n))) return;
   if(n.nodeName==='#text') parts.push(n.value||'');
   for(const c of n.childNodes||[]) rec(c);
  }
@@ -108,6 +109,7 @@ export function validateDecoratedHtml(html) {
   for (const href of [...html.matchAll(/href=["']#([^"']*)["']/gi)].map((m) => m[1])) { if (!href) errors.push('空のアンカーリンクがあります'); else if (!seen.has(href)) errors.push(`存在しないページ内アンカーがあります: #${href}`); }
   if (/href=["']#["']/i.test(html) || /href=["']["']/i.test(html)) errors.push('空のhrefがあります');
   if ((html.match(/swell-block-capbox|cap_box/g) || []).length && !/cap_box_content/.test(html)) errors.push('capboxの本文領域が見つかりません');
+  errors.push(...validateNoManualToc(html));
   errors.push(...validateMarkerPlacement(parseFragment(html)));
   return errors;
 }

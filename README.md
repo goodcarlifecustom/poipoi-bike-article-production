@@ -109,4 +109,4 @@ npm run decorate -- --slug <slug>
 npm run check:decoration -- --slug <slug>
 ```
 
-装飾処理では、H2/H3の安定ID、「この記事でわかること」、必要なH3アンカーリスト、設定された通常ulのcapbox、positive/negativeマーカー、`decoration-manifest.json` を生成・検証します。
+装飾処理では、H2/H3の安定ID、設定された通常ulのcapbox、positive/negativeマーカー、`decoration-manifest.json` を生成・検証します。

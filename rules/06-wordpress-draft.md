@@ -50,7 +50,7 @@ HTTPSサイトだけを原則許可し、localhost等の開発環境以外のHTT
 - slug: `metadata.slug`
 - content: `articles/{slug}/article-decorated.html` からfront matterを除去したGutenbergブロックマークアップ全文
 
-WordPress REST APIへ送信する `content` にfront matter、作業ログ、metadata、Markdown原稿、`rendered.html` 相当のレンダリング済みHTMLを混入させない。送信前にGutenbergブロックコメントの対応、H2 IDと目次リンク、重複ID、missing target、Markdown構文残存、H1混入、タイトル重複を検証する。
+WordPress REST APIへ送信する `content` にfront matter、作業ログ、metadata、Markdown原稿、`rendered.html` 相当のレンダリング済みHTMLを混入させない。送信前にGutenbergブロックコメントの対応、H2/H3構造、目次禁止ルール、重複ID、missing target、Markdown構文残存、H1混入、タイトル重複を検証する。
 
 H1を本文へ追加しない。カテゴリー、タグ、アイキャッチ、投稿者、コメント状態は明示設定がない限り変更しない。`metadata.meta_description` は `wordpress.seo_meta_key` のような明示設定がない限り未知のカスタムフィールドやexcerptへ送らない。
 
