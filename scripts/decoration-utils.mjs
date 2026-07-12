@@ -101,6 +101,76 @@ export function validateMarkerPlacement(root){
   }
   return errors;
 }
+export function normalLinkSignatures(html) {
+  const root = parseFragment(html);
+  return els(root, 'a')
+    .map((a) => ({
+      href: attr(a, 'href'),
+      text: text(a).replace(/\s+/g, ' ').trim(),
+      target: attr(a, 'target'),
+      rel: attr(a, 'rel'),
+      title: attr(a, 'title'),
+    }))
+    .filter((a) => /^(https?:\/\/|\/)/i.test(a.href));
+}
+export function validateNormalLinks(html, { requireAny = false } = {}) {
+  const errors = [];
+  const links = normalLinkSignatures(html);
+  if (requireAny && links.length === 0) errors.push('通常リンクが存在しません');
+  for (const link of links) {
+    if (!link.href.trim()) errors.push('hrefが空の通常リンクがあります');
+    if (!link.text) errors.push(`アンカーテキストが空の通常リンクがあります: ${link.href}`);
+    if (/^https?:\/\/[^\s]+$/i.test(link.text) || /^www\.[^\s]+$/i.test(link.text)) errors.push(`URLベタ書きのアンカーテキストがあります: ${link.href}`);
+    if (/^(こちら|詳細はこちら|公式サイト)$/i.test(link.text)) errors.push(`曖昧なアンカーテキストがあります: ${link.text}`);
+  }
+  return errors;
+}
+export function compareNormalLinks(beforeHtml, afterHtml) {
+  const before = normalLinkSignatures(beforeHtml);
+  const after = normalLinkSignatures(afterHtml);
+  return JSON.stringify(before) === JSON.stringify(after) ? [] : [
+    `装飾前後で通常リンクが一致しません（before=${before.length}, after=${after.length}）`,
+  ];
+}
+export function sourceUrlMap(sourceTexts = []) {
+  const map = new Map();
+  for (const source of sourceTexts) {
+    const textSource = String(source || '');
+    for (const match of textSource.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g)) {
+      const labels = map.get(match[2]) || new Set();
+      labels.add(match[1].trim());
+      map.set(match[2], labels);
+    }
+    for (const match of textSource.matchAll(/(https?:\/\/[^\s)>\]]+)/g)) {
+      const url = match[1].replace(/[、。.,;]+$/g, '');
+      if (!map.has(url)) map.set(url, new Set());
+      const line = textSource.slice(0, match.index).split(/\r?\n/).pop() + textSource.slice(match.index, textSource.indexOf('\n', match.index) < 0 ? textSource.length : textSource.indexOf('\n', match.index));
+      const label = line.replace(url, '').replace(/^[\s#*\-[\]]+/, '').replace(/\[[^\]]*\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+      if (label) map.get(url).add(label);
+    }
+  }
+  return map;
+}
+function meaningfulTokens(s) {
+  return String(s || '').replace(/https?:\/\/\S+/g, '').split(/[／/｜|・\s　、。:：()（）「」『』\[\]【】\-ー]+/).map((x) => x.trim()).filter((x) => x.length >= 3 && !/^(公式サイト|案内|情報|詳細|確認先|関連|ページ)$/.test(x));
+}
+export function validateExternalLinksAgainstSources(html, sourceTexts = [], { articleSlug = '', sourceDirs = [] } = {}) {
+  const errors = [];
+  const adopted = sourceUrlMap(sourceTexts);
+  const externalLinks = normalLinkSignatures(html).filter((link) => /^https?:\/\//i.test(link.href));
+  for (const dir of sourceDirs) {
+    if (articleSlug && !String(dir).includes(`articles/${articleSlug}`)) errors.push(`記事slugと異なるリンク資料を読み込んでいます: ${dir}`);
+  }
+  const touringForbidden = [/jars\.gr\.jp/i, /wwwtb\.mlit\.go\.jp\/kanto/i, /keikenkyo\.or\.jp/i, /police\.pref\.chiba\.jp/i, /poi-poi\.co\.jp\/bike\/?$/i];
+  for (const link of externalLinks) {
+    if (!adopted.has(link.href)) errors.push(`採用資料にない外部URLがあります: ${link.href}`);
+    if (/touring/i.test(articleSlug) && touringForbidden.some((re) => re.test(link.href))) errors.push(`別記事用の出典が混入しています: ${link.href}`);
+    const labels = [...(adopted.get(link.href) || [])];
+    const tokens = labels.flatMap(meaningfulTokens);
+    if (tokens.length && !tokens.some((token) => link.text.includes(token))) errors.push(`アンカーテキストとリンク先の内容が一致しません: ${link.text} -> ${link.href}`);
+  }
+  return [...new Set(errors)];
+}
 export function validateDecoratedHtml(html) {
   const errors = [];
   const ids = [...html.matchAll(/id=["']([^"']+)["']/gi)].map((m) => m[1]);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { validateDecoratedHtml } from '../scripts/decoration-utils.mjs';
+import { validateDecoratedHtml, compareNormalLinks, validateNormalLinks, validateExternalLinksAgainstSources } from '../scripts/decoration-utils.mjs';
 import { cpSync, readFileSync, writeFileSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 const fixtureRoot = 'test/fixtures/decoration-article';
@@ -167,6 +167,33 @@ test('link attributes are preserved and link text targets fail explicitly',()=>{
     writeFileSync(`articles/${slug}/decoration.json`,JSON.stringify({version:1,enabled:true,outline:{enabled:true,title:'【この記事でわかること】'},section_navigation:{enabled:true,minimum_h3:3,default_title:'この章でわかること',overrides:[]},list_boxes:[],markers:[{section:{level:2,heading:'リンク横断'},tone:'positive',text:'前半中間後半です。'}]},null,2)+'\n');
     assert.throws(()=>sh(['run','decorate','--','--slug',slug]),/インライン要素をまたぐ/);
   } finally { cleanup(slug); }
+});
+
+test('regular link parity and source validation work with minimal HTML',()=>{
+  const before='<p>通行料金は<a href="https://www.chiba-dourokousha.or.jp/price_list/" target="_blank" rel="noopener noreferrer" title="通行料金案内">千葉県道路公社の通行料金案内</a>で確認してください。出発前には<a href="/bike/touring-items/">バイクツーリングの持ち物</a>も確認してください。</p>';
+  const after='<p><span class="swl-marker mark_yellow">通行料金</span>は<a href="https://www.chiba-dourokousha.or.jp/price_list/" target="_blank" rel="noopener noreferrer" title="通行料金案内">千葉県道路公社の通行料金案内</a>で確認してください。出発前には<a href="/bike/touring-items/">バイクツーリングの持ち物</a>も確認してください。</p>';
+  assert.deepEqual(compareNormalLinks(before, after), []);
+  assert.match(validateNormalLinks('<p><a href="https://example.com"></a></p>').join('\n'), /アンカーテキストが空/);
+  assert.match(validateNormalLinks('<p><a href="https://example.com">https://example.com</a></p>').join('\n'),/URLベタ書き/);
+  const sources=['- [千葉県道路公社の通行料金案内](https://www.chiba-dourokousha.or.jp/price_list/)'];
+  assert.deepEqual(validateExternalLinksAgainstSources(before, sources, {articleSlug:'chiba-touring', sourceDirs:['articles/chiba-touring/source_plan.md']}), []);
+});
+
+test('touring source validation rejects unrelated or mismatched external links',()=>{
+  const touringSources=[
+    '- [千葉県道路公社の通行料金案内](https://www.chiba-dourokousha.or.jp/price_list/)',
+    '- [海ほたる公式サイト](https://www.umihotaru.com/)'
+  ];
+  assert.match(validateExternalLinksAgainstSources('<p><a href="https://www.jars.gr.jp/">自動車リサイクルシステム</a></p>', touringSources, {articleSlug:'chiba-touring', sourceDirs:['articles/chiba-touring/external-links.md']}).join('\n'),/採用資料にない外部URL|別記事用の出典/);
+  assert.match(validateExternalLinksAgainstSources('<p><a href="https://example.com/">千葉県道路公社の通行料金案内</a></p>', touringSources, {articleSlug:'chiba-touring', sourceDirs:['articles/chiba-touring/source_plan.md']}).join('\n'),/採用資料にない外部URL/);
+  assert.match(validateExternalLinksAgainstSources('<p><a href="https://www.umihotaru.com/">千葉県道路公社の通行料金案内</a></p>', touringSources, {articleSlug:'chiba-touring', sourceDirs:['articles/chiba-touring/source_plan.md']}).join('\n'),/アンカーテキストとリンク先/);
+  assert.match(validateExternalLinksAgainstSources('<p><a href="https://www.jars.gr.jp/">自動車リサイクルシステム</a></p>', ['- [自動車リサイクルシステム](https://www.jars.gr.jp/)'], {articleSlug:'chiba-touring', sourceDirs:['articles/chiba-touring/external-links.md']}).join('\n'),/別記事用の出典/);
+  assert.match(validateExternalLinksAgainstSources('<p><a href="https://www.umihotaru.com/">海ほたる公式サイト</a></p>', touringSources, {articleSlug:'chiba-touring', sourceDirs:['articles/bike-kaitori-chiba-test/external-links.md']}).join('\n'),/記事slugと異なる/);
+});
+
+test('manual heading anchor list fails but normal external link with matching heading ids passes',()=>{
+  assert.match(validateDecoratedHtml('<h2 id="a">A</h2><ul><li><a href="#a">A</a></li><li><a href="#b">B</a></li></ul><h3 id="b">B</h3><p><span class="swl-marker mark_yellow">本文です。</span></p>').join('\n'),/目次|アンカーリンク/);
+  assert.doesNotMatch(validateDecoratedHtml('<h2 id="a">A</h2><p><a href="https://example.com/a">Example公式情報</a>を確認します。<span class="swl-marker mark_yellow">本文です。</span></p><h3 id="b">B</h3><p><span class="swl-marker mark_yellow">追加本文です。</span></p>').join('\n'),/目次|通常リンク/);
 });
 
 test('paragraph index drift fails instead of marking another paragraph',()=>{
