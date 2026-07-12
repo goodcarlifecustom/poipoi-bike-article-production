@@ -42,4 +42,4 @@
 - 表: `<!-- wp:table -->` の中に `<figure class="wp-block-table"><table><tbody>...</tbody></table></figure>` を置く。
 - 画像: `<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->` の中に `<figure class="wp-block-image size-large"><img src="実在URL" alt="代替テキスト"/></figure>` を置き、架空のWordPressメディアIDを付けない。
 
-導入文の後、最初のH2より前に「この記事でわかること」を置き、主要な全H2へのアンカーリンクを設定する。H2のidは `sec-01`、`sec-02` のように安定付与し、リンクの `href` とH2の `id`、リンクテキストとH2文言を一致させる。比較表または要点表、選び方、詳細解説、注意点、FAQ、まとめを検索意図に合わせて自然に含める。
+導入文の後、最初のH2より前に「この記事でわかること」を通常のdiv、ul、liで1回だけ置いてよい。ただし見出しタグ、H2/H3文字列の転載、ページ内アンカーリンクは使わず、読者が得られる情報を3〜5項目で要約する。目次はSWELLがH2/H3から自動生成するため、Codex側では「目次」「INDEX」、[swell_toc]、[toc]、目次用nav、H2/H3アンカーリンク一覧、H2直下のH3一覧、「この章でわかること」を一切出力しない。比較表または要点表、選び方、詳細解説、注意点、FAQ、まとめを検索意図に合わせて自然に含める。

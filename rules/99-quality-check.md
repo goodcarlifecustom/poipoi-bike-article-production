@@ -12,7 +12,7 @@
 - `status` は `draft`。
 - `article.html`、`article-linked.html`、`article-decorated.html` が空ではなく、Gutenbergブロックコメントの開始・終了が対応し、H1を含まない。
 - 既存ブロックの二重変換、記事全体の `wp:html` 化、Markdown見出し・リスト・画像記法・コードフェンス残存、front matter混入、タイトル重複、rendered HTML投稿を検出する。
-- 「この記事でわかること」のアンカーリンクとH2の `sec-XX` ID、リンクテキストとH2文言が一致し、duplicate id と missing target がない。
+- Codex生成の目次、目次ショートコード、目次用nav、H2/H3アンカーリンク一覧、「この章でわかること」、H2直下のH3一覧がなく、duplicate id と missing target がない。
 
 - 記事冒頭が「結論：」「要点：」「ポイント：」などのラベルで始まっていない。
 - H3直下が1段落だけで終わっていない。

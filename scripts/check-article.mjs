@@ -7,6 +7,7 @@ import { execSync } from 'node:child_process';
 import { argvValue, isUnresolved, parseList, parseScalar } from './workflow-utils.mjs';
 import { redact } from './wordpress-utils.mjs';
 import { validateGutenbergContent, visibleCharCount } from './gutenberg-utils.mjs';
+import { loadApprovedOutline, validateNoManualToc } from './toc-validation.mjs';
 const execFileAsync = promisify(execFile);
 
 function visibleTextLength(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--([\s\S]*?)-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, '').length; }
@@ -70,11 +71,13 @@ if (!slug) { console.error('Usage: npm run check -- --slug slug'); process.exit(
 const dir = path.join('articles', slug); await mkdir(dir, { recursive: true });
 const required = ['input.yml','metadata.json','research.md','serp.md','headings.csv','heading-analysis.md','heading-plan.md','draft.md','article.html','article-linked.html','article-decorated.html','external-links.md'];
 const results = []; let ok = true;
+let approvedOutline = [];
 async function fail(message, action = '修正してください') { ok = false; results.push(`- NG: ${message}\n  - 次アクション: ${action}`); }
 function pass(message) { results.push(`- OK: ${message}`); }
 for (const file of required) { const target = path.join(dir, file); if (!existsSync(target)) await fail(`${file} がありません`); else if ((await stat(target)).size === 0 && !['input.yml','metadata.json'].includes(file)) await fail(`${file} が空です`); else pass(`${file} を確認しました`); }
 const input = existsSync(path.join(dir, 'input.yml')) ? await readFile(path.join(dir, 'input.yml'), 'utf8') : '';
 let metadata = {}; try { metadata = JSON.parse(await readFile(path.join(dir, 'metadata.json'), 'utf8')); pass('metadata.json は有効なJSONです'); } catch { await fail('metadata.json が有効なJSONではありません'); }
+try { approvedOutline = await loadApprovedOutline(dir); if (approvedOutline.length) pass('承認済み見出し構成を読み込みました'); } catch (e) { await fail(`承認済み見出し構成を読み込めません: ${e.message}`); }
 const research = existsSync(path.join(dir, 'research.md')) ? await readFile(path.join(dir, 'research.md'), 'utf8') : '';
 if (research.trim().length < 50) await fail('research.md が空または短すぎます'); else pass('research.md は空ではありません');
 const mainKeyword = parseScalar(input, 'main_keyword') || parseScalar(input, 'keyword');
@@ -96,6 +99,7 @@ if (metadata.target_keyword && mainKeyword && metadata.target_keyword !== mainKe
 for (const f of ['article.html','article-linked.html','article-decorated.html']) {
   if (!existsSync(path.join(dir, f))) continue; const html = await readFile(path.join(dir, f), 'utf8');
   if (!html.trim()) continue; const gb = validateGutenbergContent(html, { title: metadata.title }); if (!gb.ok) await fail(`${f} のGutenberg検証に失敗しました: ${gb.errors.join(' / ')}`); else pass(`${f} はGutenbergブロックとして有効です`); if (/<h1\b/i.test(html)) await fail(`${f} にH1があります`); else pass(`${f} にH1はありません`);
+  const tocErrors = validateNoManualToc(html, { approvedOutline, metadata }); if (tocErrors.length) await fail(`${f} の目次・見出し構造検証に失敗しました: ${tocErrors.join(' / ')}`); else pass(`${f} の目次・見出し構造検証を確認しました`);
   const hs = headings(html);
   const h3Count = hs.filter((h) => h.level === 3).length;
   if (hs.length >= 8 && h3Count === 0) await fail(`${f} は見出しが8件以上あるのにH3が0件です`, '主要章をH2、章内項目をH3に戻してください');

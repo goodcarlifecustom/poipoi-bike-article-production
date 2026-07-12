@@ -2,8 +2,9 @@
 
 新規記事では `decoration.json` を作成し、`npm run decorate -- --slug <slug>` で `article-linked.html`（なければ `article.html`）から `article-decorated.html` を生成する。
 
-- H2に安定したIDを付与し、最初のH2直前に「この記事でわかること」をcapboxで追加する。
-- H3が3個以上あるH2では、H2直下の導入文直後にH3アンカーリストをcapboxで追加する。
+- H2/H3に安定したIDを付与するが、目次・見出しリンク一覧・H3アンカーリストは生成しない。目次はSWELLの自動目次へ任せる。
+- 「この記事でわかること」はarticle.html側で通常のdiv/ul/liとして要約する場合のみ許可し、装飾処理では追加しない。
+- H2直下には章の結論や概要を説明する通常の文章だけを置き、「この章でわかること」や配下H3一覧を追加しない。
 - 通常ulは `decoration.json` の `list_boxes` で指定されたものだけcapbox化する。仮タイトルは禁止。
 
 ## 本文マーカー適用工程（必須）

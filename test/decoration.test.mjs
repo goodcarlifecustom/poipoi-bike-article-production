@@ -10,7 +10,7 @@ function sh(args){const patched=args[0]==='run'&&args[1]==='create'?args.concat(
 function prepare(slug){rmSync(`articles/${slug}`,{recursive:true,force:true}); mkdirSync(`articles/${slug}`,{recursive:true}); cpSync(fixtureRoot,`articles/${slug}`,{recursive:true});}
 function cleanup(slug){rmSync(`articles/${slug}`,{recursive:true,force:true});}
 
-test('decorate creates ids, outline, h3 nav, capbox, markers and is idempotent without WordPress',()=>{
+test('decorate creates ids, capbox, markers and is idempotent without WordPress without manual TOC',()=>{
   const slug='decoration-fixture'; prepare(slug);
   try {
     const sourceBefore=readFileSync(`articles/${slug}/article.html`,'utf8');
@@ -22,8 +22,8 @@ test('decorate creates ids, outline, h3 nav, capbox, markers and is idempotent w
     assert.equal(readFileSync(`articles/${slug}/article.html`,'utf8'),sourceBefore);
     assert.match(one,/id="section-01"/);
     assert.match(one,/id="existing-summary"/);
-    assert.match(one,/【この記事でわかること】/);
-    assert.match(one,/この章でわかること/);
+    assert.doesNotMatch(one,/【この記事でわかること】|この章でわかること/);
+    assert.doesNotMatch(one,/<nav\b|\[swell_toc\]|\[toc\]/i);
     assert.match(one,/買取業者を比較するときの確認項目/);
     assert.match(one,/<span class="swl-marker mark_yellow">査定条件を同じ基準で比較することが重要です<\/span>/);
     assert.match(one,/<mark[^>]+>契約後のキャンセル条件は業者によって異なります<\/mark>/);
@@ -196,7 +196,10 @@ test('new article template enables decoration config with default WordPress draf
   const slug='template-decoration-test'; cleanup(slug);
   try {
     sh(['run','create','--','--main-keyword','テンプレート バイク','--related-keywords','テンプレート バイク 買取','--slug',slug]);
-    assert.equal(JSON.parse(readFileSync(`articles/${slug}/decoration.json`)).enabled,true);
+    const cfg=JSON.parse(readFileSync(`articles/${slug}/decoration.json`));
+    assert.equal(cfg.enabled,true);
+    assert.equal(cfg.section_navigation,undefined);
+    assert.equal(cfg.outline,undefined);
     assert.match(readFileSync(`articles/${slug}/input.yml`,'utf8'),/post_to_wp: true/);
   } finally { cleanup(slug); }
 });

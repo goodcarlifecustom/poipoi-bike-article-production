@@ -1,0 +1,40 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { validateNoManualToc } from '../scripts/toc-validation.mjs';
+
+const approvedOutline=[
+  {level:2,text:'選び方'}, {level:3,text:'費用を見る'}, {level:3,text:'対応を見る'}, {level:2,text:'まとめ'}
+];
+function ok(html, opts={}){assert.deepEqual(validateNoManualToc(html, opts),[])}
+function ng(html, pattern, opts={}){assert.match(validateNoManualToc(html, opts).join('\n'),pattern)}
+
+test('PASS: intro summary box after lead before H2 uses div ul li and is not TOC',()=>{
+  ok('<p>導入文です。</p><div class="summary"><p>この記事でわかること</p><ul><li>失敗しない選び方の考え方</li><li>費用を見るときの注意点</li><li>売却前に準備すること</li></ul></div><h2>選び方</h2><p>概要文です。</p><h3>費用を見る</h3><p>本文です。</p><h3>対応を見る</h3><p>本文です。</p><h2>まとめ</h2><p>本文です。</p>',{approvedOutline});
+});
+
+test('PASS: H2 lead paragraph followed by H3 and no article TOC',()=>{
+  ok('<p>導入文です。</p><div><p>この記事でわかること</p><ul><li>比較前の整理方法</li><li>査定依頼時の注意点</li><li>納得して売る手順</li></ul></div><h2>選び方</h2><p>この章では概要を説明します。</p><h3>費用を見る</h3><p>本文です。</p><h3>対応を見る</h3><p>本文です。</p><h2>まとめ</h2><p>本文です。</p>',{approvedOutline});
+});
+
+test('FAIL: H2直下に全H3の一覧がある',()=>{
+  ng('<h2>選び方</h2><p>概要文です。</p><ul><li>費用を見る</li><li>対応を見る</li></ul><h3>費用を見る</h3><p>本文です。</p><h3>対応を見る</h3><p>本文です。</p>',/H2直下に配下H3の一覧/);
+});
+
+test('FAIL: banned labels and toc shortcodes',()=>{
+  ng('<h2>選び方</h2><p>この章でわかること</p><h3>費用を見る</h3><p>本文です。</p>',/章内の見出し一覧ラベル/);
+  ng('<p>[swell_toc]</p><h2>選び方</h2><p>本文です。</p>',/\[swell_toc\]/);
+  ng('<p>[toc]</p><h2>選び方</h2><p>本文です。</p>',/\[toc\]/);
+});
+
+test('FAIL: nav heading links',()=>{
+  ng('<nav class="toc"><ul><li><a href="#a">選び方</a></li><li><a href="#b">まとめ</a></li></ul></nav><h2 id="a">選び方</h2><p>本文です。</p><h2 id="b">まとめ</h2><p>本文です。</p>',/目次用nav/);
+});
+
+test('FAIL: H3 before first H2 and duplicate H3',()=>{
+  ng('<h3>費用を見る</h3><p>本文です。</p><h2>選び方</h2><p>本文です。</p>',/最初のH2より前にH3|親H2/);
+  ng('<h2>選び方</h2><p>本文です。</p><h3>費用を見る</h3><p>本文です。</p><h3>費用を見る</h3><p>本文です。</p>',/同じ見出しタグ/);
+});
+
+test('FAIL: unapproved title contaminates opening body',()=>{
+  ng('<p>別記事タイトル案</p><h2>選び方</h2><p>本文です。</p>',/未採用タイトル/,{metadata:{unused_titles:['別記事タイトル案']}});
+});
