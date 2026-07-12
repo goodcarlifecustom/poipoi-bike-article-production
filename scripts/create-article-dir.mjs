@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { argvValue, DEFAULT_CATEGORY, loadInput, normalizeRelatedKeywords, normalizeSpaces, parseList, parseScalar, postToWpFromInputs, slugFromKeyword, yamlList, yamlString } from './workflow-utils.mjs';
+import { argvValue, assertSingleOutputCounts, DEFAULT_CATEGORY, finalSlugForBase, loadInput, normalizeRelatedKeywords, normalizeSpaces, parseList, parseScalar, postToWpFromInputs, slugFromKeyword, validateSingleArticleInput, yamlList, yamlString } from './workflow-utils.mjs';
 
 function valueFrom(inputText, cliName, yamlKey = cliName) { return argvValue(process.argv, cliName) ?? parseScalar(inputText, yamlKey); }
 function mustSlug(slug) { return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug); }
@@ -10,6 +10,8 @@ function requiredInt(inputText, key) { const raw = normalizeSpaces(valueFrom(inp
 
 const inputFile = argvValue(process.argv, 'input');
 const inputText = await loadInput(inputFile);
+try { validateSingleArticleInput(inputText); }
+catch (e) { console.error(e.message); process.exit(1); }
 const mainKeyword = normalizeSpaces(valueFrom(inputText, 'main_keyword') ?? valueFrom(inputText, 'keyword') ?? '');
 if (!mainKeyword) { console.error('main_keyword is required. keyword remains supported as a backward-compatible alias.'); process.exit(1); }
 const relatedRaw = argvValue(process.argv, 'related_keywords') ?? argvValue(process.argv, 'related-keywords') ?? parseList(inputText, 'related_keywords');
@@ -30,11 +32,13 @@ if (!(minWordCount <= targetWordCount && targetWordCount <= maxWordCount)) { con
 const status = normalizeSpaces(valueFrom(inputText, 'status') ?? 'draft');
 if (status !== 'draft') { console.error('status is managed by this workflow and must be draft.'); process.exit(1); }
 const providedSlug = normalizeSpaces(valueFrom(inputText, 'slug') || '');
-const slug = providedSlug || slugFromKeyword(mainKeyword) || 'auto';
-if (slug === 'auto') { console.error('Could not generate a meaningful slug. Provide --slug after keyword analysis.'); process.exit(1); }
-if (!mustSlug(slug)) { console.error('slug must contain only lowercase letters, numbers, and hyphens.'); process.exit(1); }
+const baseSlug = providedSlug || slugFromKeyword(mainKeyword) || 'auto';
+if (baseSlug === 'auto') { console.error('Could not generate a meaningful slug. Provide --slug after keyword analysis.'); process.exit(1); }
+if (!mustSlug(baseSlug)) { console.error('slug must contain only lowercase letters, numbers, and hyphens.'); process.exit(1); }
+const { finalSlug: slug, generationNumber, collision: slugCollisionDetected } = finalSlugForBase(baseSlug);
+assertSingleOutputCounts({ articleCount: 1, articleDirectoryCount: 1, wordpressPostCount: 0 });
 const dir = path.join('articles', slug);
-if (existsSync(dir)) { console.error(`Article directory already exists: ${dir}. Refusing to overwrite or choose another slug.`); process.exit(1); }
+if (existsSync(dir)) { console.error(`MULTIPLE_ARTICLE_OUTPUT_BLOCKED: Article directory already exists after final_slug selection: ${dir}`); process.exit(1); }
 await mkdir(path.dirname(dir), { recursive: true });
 await mkdir(dir, { recursive: false });
 const now = new Date().toISOString();
@@ -46,13 +50,13 @@ const inputYml = [
   `main_keyword: ${yamlString(mainKeyword)}`,
   'related_keywords:', yamlList(relatedKeywords),
   'search_intent: auto', 'explicit_needs: auto', 'latent_needs: auto', `persona: ${yamlString(persona)}`, `article_type: ${yamlString(articleType)}`, `article_purpose: ${yamlString(articlePurpose)}`,
-  `title: ${yamlString(title)}`, `slug: ${yamlString(slug)}`, 'meta_description: auto', `min_word_count: ${minWordCount}`, `target_word_count: ${targetWordCount}`, `max_word_count: ${maxWordCount}`,
+  `title: ${yamlString(title)}`, `base_slug: ${yamlString(baseSlug)}`, `requested_slug: ${yamlString(providedSlug || baseSlug)}`, `final_slug: ${yamlString(slug)}`, `slug: ${yamlString(slug)}`, 'meta_description: auto', `min_word_count: ${minWordCount}`, `target_word_count: ${targetWordCount}`, `max_word_count: ${maxWordCount}`,
   `category: ${yamlString(category)}`, `target_media: ${yamlString(targetMedia)}`,
   'reference_urls:', yamlList(referenceUrls),
   `wordpress_draft: ${postToWp ? 'true' : 'false'}`, `post_to_wp: ${postToWp ? 'true' : 'false'}`, 'status: draft', `created_at: ${yamlString(now)}`, `notes: ${yamlString(notes)}`
 ].join('\n') + '\n';
 await writeFile(path.join(dir, 'input.yml'), inputYml, 'utf8');
-const metadata = { title: title === 'auto' ? null : title, slug, meta_description: null, target_keyword: mainKeyword, related_keywords: relatedKeywords, search_intent: null, persona, article_type: articleType, article_purpose: articlePurpose, min_char_count: minWordCount, target_char_count: targetWordCount, max_char_count: maxWordCount, min_word_count: minWordCount, target_word_count: targetWordCount, max_word_count: maxWordCount, status: 'draft', wordpress_draft: postToWp, post_to_wp: postToWp, wordpress_draft_id: null, wordpress_draft_url: null, created_at: now, updated_at: now, research_date: null, notes };
+const metadata = { title: title === 'auto' ? null : title, slug, generation_number: generationNumber, base_slug: baseSlug, requested_slug: providedSlug || baseSlug, final_slug: slug, slug_collision_detected: slugCollisionDetected, article_count: 1, article_directory_count: 1, wordpress_post_count: 0, meta_description: null, target_keyword: mainKeyword, related_keywords: relatedKeywords, search_intent: null, persona, article_type: articleType, article_purpose: articlePurpose, min_char_count: minWordCount, target_char_count: targetWordCount, max_char_count: maxWordCount, min_word_count: minWordCount, target_word_count: targetWordCount, max_word_count: maxWordCount, status: 'draft', wordpress_draft: postToWp, post_to_wp: postToWp, wordpress_draft_id: null, wordpress_draft_url: null, created_at: now, updated_at: now, research_date: null, notes };
 await writeFile(path.join(dir, 'metadata.json'), JSON.stringify(metadata, null, 2) + '\n', 'utf8');
 const decoration = { version: 1, enabled: true, intro_summary: { enabled: true, title: 'この記事でわかること' }, list_boxes: [], markers: [] };
 await writeFile(path.join(dir, 'decoration.json'), JSON.stringify(decoration, null, 2) + '\n', 'utf8');

@@ -165,5 +165,5 @@ if (metadata.post_to_wp === true && process.env.ARTICLE_CHECK_SKIP_WP_AUTOSYNC !
   }
   await runAuto('decoration check', ['run', 'check:decoration', '--', '--slug', slug]);
   await runAuto('wordpress doctor', ['run', 'wp:doctor']);
-  await runAuto('wordpress draft', ['run', 'wp:draft', '--', '--slug', slug, '--confirm', '--adopt-existing']);
+  await runAuto('wordpress draft', ['run', 'wp:draft', '--', '--slug', slug, '--confirm']);
 }

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 
 export const DEFAULT_CATEGORY = 'バイク買取';
 export const DEFAULT_TARGET_MEDIA = 'https://poi-poi.co.jp/bike/';
@@ -97,4 +98,55 @@ export function isUnresolved(value) {
   if (value === null || value === undefined) return true;
   const v = String(value).trim().toLowerCase();
   return v === '' || v === 'auto' || v === 'null' || v === 'undefined';
+}
+
+export function validateSingleArticleInput(text = '') {
+  const errors = [];
+  const mainKeywordKeys = [...text.matchAll(/^main_keyword\s*:/gm)];
+  const keywordKeys = [...text.matchAll(/^keyword\s*:/gm)];
+  const mainKeywordArray = /^main_keyword\s*:\s*\[/m.test(text) || /^main_keyword\s*:\s*$/m.test(text);
+  if (mainKeywordArray) errors.push('main_keyword must be a single scalar value, not an array/list.');
+  if (mainKeywordKeys.length > 1 || (mainKeywordKeys.length && keywordKeys.length)) errors.push('Multiple main_keyword values were provided.');
+  if ((text.match(/^approved_outline\s*:/gm) || []).length > 1) errors.push('Multiple approved_outline inputs were provided.');
+  if (/approved_outline\s*:\s*\[[\s\S]*?\{[\s\S]*?\}\s*,\s*\{/m.test(text)) errors.push('Multiple approved_outline inputs were provided.');
+  for (const key of ['articles', 'article_jobs', 'article_units', 'generation_units']) {
+    const itemCount = countYamlListItems(text, key);
+    if (itemCount > 1) errors.push(`Multiple article generation units were provided in ${key}.`);
+  }
+  if (/(?:1車種1記事|1キーワード1記事).*(?:複数|一括|順番に|自動生成)|(?:複数記事|複数の記事|複数のarticleディレクトリ).*(?:作成|生成)/.test(text)) errors.push('Bulk/multiple article generation instruction was provided.');
+  if (errors.length) {
+    const error = new Error(`MULTIPLE_ARTICLE_INPUT: ${errors.join(' ')}`);
+    error.code = 'MULTIPLE_ARTICLE_INPUT';
+    throw error;
+  }
+}
+
+function countYamlListItems(text, key) {
+  const lines = text.split(/\r?\n/);
+  let itemCount = 0;
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!new RegExp(`^${key}:\\s*$`).test(lines[i])) continue;
+    for (let j = i + 1; j < lines.length; j += 1) {
+      if (/^\S/.test(lines[j])) break;
+      if (/^\s*-\s+/.test(lines[j])) itemCount += 1;
+    }
+  }
+  return itemCount;
+}
+
+export function finalSlugForBase(baseSlug, articlesDir = 'articles') {
+  const taken = new Set(existsSync(articlesDir) ? readdirSync(articlesDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name) : []);
+  if (!taken.has(baseSlug)) return { finalSlug: baseSlug, generationNumber: 1, collision: false };
+  for (let n = 2; ; n += 1) {
+    const candidate = n === 2 ? `${baseSlug}-new` : `${baseSlug}-new-${n - 1}`;
+    if (!taken.has(candidate)) return { finalSlug: candidate, generationNumber: n, collision: true };
+  }
+}
+
+export function assertSingleOutputCounts({ articleCount = 0, articleDirectoryCount = 0, wordpressPostCount = 0 }) {
+  if (articleCount > 1 || articleDirectoryCount > 1 || wordpressPostCount > 1) {
+    const error = new Error('MULTIPLE_ARTICLE_OUTPUT_BLOCKED: one execution may create at most one article, one article directory, and one WordPress POST.');
+    error.code = 'MULTIPLE_ARTICLE_OUTPUT_BLOCKED';
+    throw error;
+  }
 }

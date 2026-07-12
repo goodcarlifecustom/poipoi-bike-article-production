@@ -7,7 +7,7 @@
     "create": "node scripts/create-article-dir.mjs",
     "extract": "node scripts/extract-headings.mjs",
     "check": "node scripts/check-article.mjs",
-    "post": "node scripts/post-wordpress-draft.mjs --confirm --adopt-existing",
+    "post": "node scripts/post-wordpress-draft.mjs --confirm",
     "test": "node --test",
     "decorate": "node scripts/decorate-article.mjs",
     "check:decoration": "node scripts/check-decoration.mjs",
