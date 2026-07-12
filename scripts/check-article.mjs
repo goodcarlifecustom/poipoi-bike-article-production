@@ -8,6 +8,7 @@ import { argvValue, isUnresolved, parseList, parseScalar } from './workflow-util
 import { redact } from './wordpress-utils.mjs';
 import { validateGutenbergContent, visibleCharCount } from './gutenberg-utils.mjs';
 import { loadApprovedOutline, validateNoManualToc } from './toc-validation.mjs';
+import { compareNormalLinks, validateNormalLinks, normalLinkSignatures, validateExternalLinksAgainstSources } from './decoration-utils.mjs';
 const execFileAsync = promisify(execFile);
 
 function visibleTextLength(html) { return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--([\s\S]*?)-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, '').length; }
@@ -59,7 +60,7 @@ function likelyFlattenedHeadingRuns(html) {
     if (hs[i].level !== 2) continue;
     let run = 1;
     for (let j = i + 1; j < hs.length && hs[j].level === 2; j++) run++;
-    if (run < 4) continue;
+    if (run < 8) continue;
     const block = html.slice(hs[i].index, hs[i + run]?.index ?? html.length);
     const paragraphsBetween = (block.match(/<p\b/gi) || []).length;
     if (paragraphsBetween <= run + 1) problems.push(`${hs[i].text} から ${run}件`);
@@ -79,6 +80,10 @@ const input = existsSync(path.join(dir, 'input.yml')) ? await readFile(path.join
 let metadata = {}; try { metadata = JSON.parse(await readFile(path.join(dir, 'metadata.json'), 'utf8')); pass('metadata.json は有効なJSONです'); } catch { await fail('metadata.json が有効なJSONではありません'); }
 try { approvedOutline = await loadApprovedOutline(dir); if (approvedOutline.length) pass('承認済み見出し構成を読み込みました'); } catch (e) { await fail(`承認済み見出し構成を読み込めません: ${e.message}`); }
 const research = existsSync(path.join(dir, 'research.md')) ? await readFile(path.join(dir, 'research.md'), 'utf8') : '';
+const externalLinks = existsSync(path.join(dir, 'external-links.md')) ? await readFile(path.join(dir, 'external-links.md'), 'utf8') : '';
+const sourcePlanPath = ['source_plan.md','source-plan.md','source_plan.json'].map(f=>path.join(dir,f)).find(existsSync);
+const sourcePlan = sourcePlanPath ? await readFile(sourcePlanPath, 'utf8') : '';
+const linkSourcePaths = [path.join(dir, 'research.md'), path.join(dir, 'external-links.md'), sourcePlanPath].filter(Boolean);
 if (research.trim().length < 50) await fail('research.md が空または短すぎます'); else pass('research.md は空ではありません');
 const mainKeyword = parseScalar(input, 'main_keyword') || parseScalar(input, 'keyword');
 const related = parseList(input, 'related_keywords');
@@ -111,6 +116,9 @@ for (const f of ['article.html','article-linked.html','article-decorated.html'])
   if (flatRuns.length) await fail(`${f} に親子構造にすべきH2連続が疑われます: ${flatRuns.join(' / ')}`, '章内項目はH3へ変更してください');
   else pass(`${f} のH2連続構造を確認しました`);
   if (/<a\b[^>]*>\s*<\/a>/i.test(html)) await fail(`${f} に空のaタグがあります`);
+  const linkErrors = validateNormalLinks(html);
+  if (linkErrors.length) await fail(`${f} の通常リンク検証に失敗しました: ${linkErrors.join(' / ')}`);
+  else pass(`${f} の通常リンクを確認しました`);
   const ids = anchors(html); for (const href of [...html.matchAll(/href=["']#([^"']+)["']/gi)].map((m)=>m[1])) if (!ids.includes(href)) await fail(`${f} に存在しない内部アンカー #${href} があります`);
   const opening = firstVisibleBlockText(html);
   if (/^(結論|要点|ポイント)\s*[：:]/.test(opening)) results.push(`- WARN: ${f} の記事冒頭が「結論：」「要点：」「ポイント：」などのラベルで始まっています`); else pass(`${f} の冒頭ラベルを確認しました`);
@@ -125,7 +133,20 @@ for (const f of ['article.html','article-linked.html','article-decorated.html'])
     if (/(場合があります|確認しましょう)[。.!！]?\s*$/.test(last)) results.push(`- WARN: ${f} のH3「${section.heading}」が曖昧な確認促しだけで終わっています`);
   }
 }
+const linkedHtml = existsSync(path.join(dir, 'article-linked.html')) ? await readFile(path.join(dir, 'article-linked.html'), 'utf8') : '';
 const decorated = existsSync(path.join(dir, 'article-decorated.html')) ? await readFile(path.join(dir, 'article-decorated.html'), 'utf8') : '';
+if (/(https?:\/\/[^\s)>\]]+)/i.test(`${externalLinks}\n${sourcePlan}`)) {
+  if (normalLinkSignatures(linkedHtml).length === 0) await fail('採用済みリンク資料があるのにarticle-linked.htmlに通常リンクがありません');
+  else pass('採用済みリンク資料に対応する通常リンクを確認しました');
+}
+const sourceLinkErrors = validateExternalLinksAgainstSources(linkedHtml, [research, externalLinks, sourcePlan], { articleSlug: slug, sourceDirs: linkSourcePaths });
+if (sourceLinkErrors.length) await fail(`article-linked.html の採用リンク検証に失敗しました: ${sourceLinkErrors.join(' / ')}`);
+else pass('article-linked.html の外部URLは採用リンク資料と一致しています');
+if (linkedHtml && decorated) {
+  const linkDiff = compareNormalLinks(linkedHtml, decorated);
+  if (linkDiff.length) await fail(`article-linked.htmlとarticle-decorated.htmlの通常リンク不一致: ${linkDiff.join(' / ')}`);
+  else pass('article-linked.htmlとarticle-decorated.htmlの通常リンク一致を確認しました');
+}
 const len = visibleCharCount(decorated); const target = targetCount;
 if (minCount && len < minCount) await fail('本文文字数が最低文字数を下回っています', `最低 ${minCount} に対し本文 ${len}`);
 else if (maxCount && len > maxCount) await fail('本文文字数が上限文字数を上回っています', `上限 ${maxCount} に対し本文 ${len}`);
