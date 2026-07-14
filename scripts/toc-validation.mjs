@@ -11,8 +11,10 @@ function els(root,name){const out=[]; walk(root,n=>{if(n.tagName===name)out.push
 function attr(n,k){return n.attrs?.find(a=>a.name===k)?.value||''}
 function hasClass(n,c){return (` ${attr(n,'class')} `).includes(` ${c} `)}
 function parent(root,target){let p=null; walk(root,n=>{for(const c of n.childNodes||[])if(c===target)p=n}); return p;}
+function isIn(root,n,pred){let p=parent(root,n); while(p){if(pred(p))return true; p=parent(root,p)} return false;}
 function sectionNodes(root,heading){const p=parent(root,heading); if(!p)return[]; const i=p.childNodes.indexOf(heading); const lvl=Number(heading.tagName.slice(1)); const out=[]; for(const n of p.childNodes.slice(i+1)){if(/^h[1-6]$/.test(n.tagName||'')&&Number(n.tagName.slice(1))<=lvl)break; out.push(n)} return out;}
 function capTitle(n){return hasClass(n,'swell-block-capbox')? text((n.childNodes||[]).find(c=>hasClass(c,'cap_box_ttl'))).trim():''}
+function isGeneratedTocCapbox(n){return hasClass(n,'swell-block-capbox')&&attr(n,'data-generated-toc')==='true'&&['この記事でわかること','【この記事でわかること】','この章でわかること'].includes(capTitle(n))}
 
 function norm(s){return String(s||'').replace(/\s+/g,' ').trim();}
 function visible(n){return norm(text(n));}
@@ -38,17 +40,17 @@ export function validateNoManualToc(html,{approvedOutline=[],metadata={}}={}){
  if(/\[toc\]/i.test(raw))errors.push('[toc] が存在します');
  if(/\[(?:table_of_contents|ez-toc|toc[^\]]*)\]/i.test(raw))errors.push('目次用shortcodeが存在します');
  const bodyText=visible(root);
- if(/この章でわかること|このセクションでわかること|この章の内容|各章でわかること/.test(bodyText))errors.push('章内の見出し一覧ラベルが存在します');
+ if(/この章でわかること|このセクションでわかること|この章の内容|各章でわかること/.test(bodyText)&&!els(root,'div').some(isGeneratedTocCapbox))errors.push('章内の見出し一覧ラベルが存在します');
  for(const n of els(root,'nav')) if(isManualTocNav(root,n)) errors.push('手動生成された目次用navが存在します');
  for(const n of [...els(root,'h2'),...els(root,'h3'),...els(root,'p'),...els(root,'div')]){const t=visible(n); if(/^(目次|INDEX|TOC)$/i.test(t)&& (headingAnchorLinks(root,n).length||hasClass(n,'toc')||/toc|index|目次/i.test(attr(n,'class')+attr(n,'id')))) errors.push('「目次」「INDEX」が目次要素として本文に存在します');}
- for(const n of [...els(root,'ul'),...els(root,'ol'),...els(root,'nav'),...els(root,'div')]) if(isTocContainer(root,n)) errors.push('見出しへのアンカーリンクを並べた目次要素が存在します');
+ for(const n of [...els(root,'ul'),...els(root,'ol'),...els(root,'nav'),...els(root,'div')]){ const links=headingAnchorLinks(root,n); const onlyGeneratedLinks=links.length&&links.every(a=>isIn(root,a,isGeneratedTocCapbox)); if(isTocContainer(root,n)&&!onlyGeneratedLinks&&!isIn(root,n,isGeneratedTocCapbox)&&!isGeneratedTocCapbox(n)) errors.push('見出しへのアンカーリンクを並べた目次要素が存在します'); }
  const hs=headings(root); const firstH2=hs.find(h=>h.level===2); const firstH3=hs.find(h=>h.level===3); if(firstH3&&(!firstH2||order(root,firstH3.node)<order(root,firstH2.node))) errors.push('最初のH2より前にH3が存在します');
  let currentH2=null; for(const h of hs){if(h.level===2)currentH2=h; if(h.level===3&&!currentH2)errors.push(`H3に対応する親H2が存在しません: ${h.text}`);}
  const seen=new Set(); for(const h of hs){const key=`h${h.level}:${h.text}`; if(seen.has(key))errors.push(`同じ見出しタグが複数回出現します: ${key}`); seen.add(key);}
  for(const h2 of els(root,'h2')){const nodes=directMeaningful(sectionNodes(root,h2)); const h3s=sectionNodes(root,h2).filter(n=>n.tagName==='h3').map(visible); const beforeH3=nodes.slice(0,nodes.findIndex(n=>n.tagName==='h3')<0?nodes.length:nodes.findIndex(n=>n.tagName==='h3'));
-   for(const n of beforeH3){const links=linkListTargets(root,n); const items=[...descendants(n,'li')].map(visible); const cap=hasClass(n,'swell-block-capbox')?capTitle(n):''; const joined=visible(n); const matches=h3s.filter(t=>t&&(items.includes(t)||joined.includes(t))).length; if(cap==='この章でわかること'||(h3s.length&&matches>=Math.min(2,h3s.length))) errors.push(`H2直下に配下H3の一覧が存在します: ${visible(h2)}`); if(links.length>=2) errors.push(`見出しへのアンカーリンクを並べた一覧が存在します: ${visible(h2)}`); }
+   for(const n of beforeH3){const links=linkListTargets(root,n); const items=[...descendants(n,'li')].map(visible); const cap=hasClass(n,'swell-block-capbox')?capTitle(n):''; const joined=visible(n); const matches=h3s.filter(t=>t&&(items.includes(t)||joined.includes(t))).length; if(!isGeneratedTocCapbox(n)&&(cap==='この章でわかること'||(h3s.length&&matches>=Math.min(2,h3s.length)))) errors.push(`H2直下に配下H3の一覧が存在します: ${visible(h2)}`); if(!isGeneratedTocCapbox(n)&&links.length>=2) errors.push(`見出しへのアンカーリンクを並べた一覧が存在します: ${visible(h2)}`); }
  }
- const introBoxes=els(root,'div').filter(d=>/この記事でわかること/.test(visible(d))); if(introBoxes.length>1)errors.push('「この記事でわかること」が複数存在します'); for(const box of introBoxes){if(descendants(box,'h2').length||descendants(box,'h3').length)errors.push('「この記事でわかること」に見出しタグが使われています'); if(linkListTargets(root,box).length)errors.push('「この記事でわかること」に見出しアンカーリンクがあります'); const listTexts=descendants(box,'li').map(visible); const headingTexts=hs.map(h=>h.text); if(listTexts.some(x=>headingTexts.includes(x)))errors.push('「この記事でわかること」に見出し文字列が転載されています'); if(listTexts.length&& (listTexts.length<3||listTexts.length>5))errors.push('「この記事でわかること」は3〜5項目で要約してください'); }
+ const introBoxes=els(root,'div').filter(d=>hasClass(d,'swell-block-capbox')&&/この記事でわかること/.test(visible(d))); const manualIntroBoxes=introBoxes.filter(d=>!isGeneratedTocCapbox(d)); if(manualIntroBoxes.length>1)errors.push('「この記事でわかること」が複数存在します'); for(const box of introBoxes){if(!isGeneratedTocCapbox(box)&&(descendants(box,'h2').length||descendants(box,'h3').length))errors.push('「この記事でわかること」に見出しタグが使われています'); if(linkListTargets(root,box).length&&!isGeneratedTocCapbox(box))errors.push('「この記事でわかること」に見出しアンカーリンクがあります'); const listTexts=descendants(box,'li').map(visible); const headingTexts=hs.map(h=>h.text); if(!isGeneratedTocCapbox(box)&&listTexts.some(x=>headingTexts.includes(x)))errors.push('「この記事でわかること」に見出し文字列が転載されています'); if(!isGeneratedTocCapbox(box)&&listTexts.length&& (listTexts.length<3||listTexts.length>5))errors.push('「この記事でわかること」は3〜5項目で要約してください'); }
  if(approvedOutline.length){const approved=approvedOutline.map(h=>({level:Number(h.level),text:norm(h.text)})).filter(h=>h.level&&h.text); const actual=hs.map(h=>({level:h.level,text:h.text})); if(JSON.stringify(actual)!==JSON.stringify(approved))errors.push('承認済みH2・H3の件数、順序、親子関係が異なります'); }
  const titles=[...(metadata.unused_titles||metadata.rejected_titles||[])].filter(Boolean); for(const title of titles){if(bodyText.includes(title))errors.push(`未採用タイトルが本文へ混入しています: ${title}`)}
  return [...new Set(errors)];

@@ -43,3 +43,10 @@
 - 画像: `<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->` の中に `<figure class="wp-block-image size-large"><img src="実在URL" alt="代替テキスト"/></figure>` を置き、架空のWordPressメディアIDを付けない。
 
 導入文の後、最初のH2より前に「この記事でわかること」を通常のdiv、ul、liで1回だけ置いてよい。ただし見出しタグ、H2/H3文字列の転載、ページ内アンカーリンクは使わず、読者が得られる情報を3〜5項目で要約する。目次はSWELLがH2/H3から自動生成するため、Codex側では「目次」「INDEX」、[swell_toc]、[toc]、目次用nav、H2/H3アンカーリンク一覧、H2直下のH3一覧、「この章でわかること」を一切出力しない。比較表または要点表、選び方、詳細解説、注意点、FAQ、まとめを検索意図に合わせて自然に含める。
+
+## アンカー生成（復元済み）
+
+- 装飾工程では、記事冒頭にシステム生成のSWELL capbox「【この記事でわかること】」を配置し、全H2へのアンカーリンクをH2順・H2文言一致で出力する。
+- H3が3件以上あるH2配下では、H2導入文の直後にシステム生成のSWELL capbox「この章でわかること」を配置し、配下の全H3へのアンカーリンクをH3順・H3文言一致で出力する。
+- H2/H3はHTMLのidとGutenberg `wp:heading` コメントの`anchor`を必ず一致させ、`class="wp-block-heading"`を付与する。既存の有効なIDは維持し、IDがない場合だけ安定IDを生成する。
+- 手動目次、`nav`、`[swell_toc]`、`[toc]`は引き続き禁止し、例外はシステム生成capboxのみとする。

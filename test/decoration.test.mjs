@@ -20,9 +20,10 @@ test('decorate creates ids, capbox, markers and is idempotent without WordPress 
     const two=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
     assert.equal(two,one);
     assert.equal(readFileSync(`articles/${slug}/article.html`,'utf8'),sourceBefore);
-    assert.match(one,/id="section-01"/);
+    assert.match(one,/id="h2-01"/);
     assert.match(one,/id="existing-summary"/);
-    assert.doesNotMatch(one,/【この記事でわかること】|この章でわかること/);
+    assert.match(one,/【この記事でわかること】/);
+    assert.match(one,/この章でわかること/);
     assert.doesNotMatch(one,/<nav\b|\[swell_toc\]|\[toc\]/i);
     assert.match(one,/買取業者を比較するときの確認項目/);
     assert.match(one,/<span class="swl-marker mark_yellow">査定条件を同じ基準で比較することが重要です<\/span>/);
@@ -225,8 +226,8 @@ test('new article template enables decoration config with default WordPress draf
     sh(['run','create','--','--main-keyword','テンプレート バイク','--related-keywords','テンプレート バイク 買取','--slug',slug]);
     const cfg=JSON.parse(readFileSync(`articles/${slug}/decoration.json`));
     assert.equal(cfg.enabled,true);
-    assert.equal(cfg.section_navigation,undefined);
-    assert.equal(cfg.outline,undefined);
+    assert.deepEqual(cfg.section_navigation,{enabled:true,minimum_h3:3,default_title:'この章でわかること'});
+    assert.deepEqual(cfg.outline,{enabled:true,title:'【この記事でわかること】'});
     assert.match(readFileSync(`articles/${slug}/input.yml`,'utf8'),/post_to_wp: true/);
   } finally { cleanup(slug); }
 });

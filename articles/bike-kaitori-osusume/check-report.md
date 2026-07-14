@@ -1,15 +1,158 @@
-# 装飾チェックレポート
+# 品質チェックレポート
 
 - slug: bike-kaitori-osusume
 - result: PASS
 
 ## 詳細
 
-- OK: 装飾設定を確認
-- OK: H1なし
-- OK: ID一意
-- OK: この記事でわかることのアンカー実在を確認
-- OK: 記事アウトラインOK
-- OK: 本文マーカーOK (40件)
-- OK: 装飾前後のH2/H3タグ種別と順序を確認
-- OK: 本文テキスト整合
+- OK: input.yml を確認しました
+- OK: metadata.json を確認しました
+- OK: research.md を確認しました
+- OK: serp.md を確認しました
+- OK: headings.csv を確認しました
+- OK: heading-analysis.md を確認しました
+- OK: heading-plan.md を確認しました
+- OK: draft.md を確認しました
+- OK: article.html を確認しました
+- OK: article-linked.html を確認しました
+- OK: article-decorated.html を確認しました
+- OK: external-links.md を確認しました
+- OK: metadata.json は有効なJSONです
+- OK: research.md は空ではありません
+- OK: main_keyword を確認しました
+- OK: related_keywords 配列を確認しました
+- OK: title は生成済みです
+- OK: slug は生成済みです
+- OK: meta_description は生成済みです
+- OK: search_intent は生成済みです
+- OK: persona は生成済みです
+- OK: article_type は生成済みです
+- OK: target_word_count は生成済みです
+- OK: status: draft を確認しました
+- OK: min_char_count/min_word_count を確認しました
+- OK: target_char_count/target_word_count を確認しました
+- OK: max_char_count/max_word_count を確認しました
+- OK: 文字数設定の大小関係を確認しました
+- OK: wordpress_draft と post_to_wp の整合性を確認しました
+- OK: target_media を確認しました
+- OK: article_type を確認しました
+- OK: persona を確認しました
+- OK: article_purpose を確認しました
+- OK: post_to_wp はbooleanです
+- OK: slug は一致しています
+- OK: メインキーワードは一致しています
+- OK: article.html はGutenbergブロックとして有効です
+- OK: article.html にH1はありません
+- OK: article.html の目次・見出し構造検証を確認しました
+- OK: article.html のH2/H3件数を確認しました
+- OK: article.html の隣接テーブル重複を確認しました
+- OK: article.html のH2連続構造を確認しました
+- OK: article.html の通常リンクを確認しました
+- OK: article.html の冒頭ラベルを確認しました
+- OK: article.html のH3「査定額だけでなく手数料・出張料・引取料を確認する」は2〜4段落です
+- OK: article.html のH3「査定後と契約後のキャンセル条件を分けて見る」は2〜4段落です
+- OK: article.html のH3「一括査定は査定額比較と営業電話のバランスで選ぶ」は2〜4段落です
+- OK: article.html のH3「対応エリアと車両状態を事前に伝える」は2〜4段落です
+- OK: article.html のH3「バイク王｜全国規模の出張買取を相談したい人向け」は2〜4段落です
+- OK: article.html のH3「カチエックス｜写真をもとに複数社の入札を比較したい人向け」は2〜4段落です
+- OK: article.html のH3「グーバイク買取｜相場を見ながら売却を進めたい人向け」は2〜4段落です
+- OK: article.html のH3「バイクランド｜出張査定の費用条件を重視する人向け」は2〜4段落です
+- OK: article.html のH3「バイクワン｜事故車・不動車を含めて相談したい人向け」は2〜4段落です
+- OK: article.html のH3「レッドバロン｜店舗網と手続き対応を重視する人向け」は2〜4段落です
+- OK: article.html のH3「バイク館｜事前に自動査定で相場感をつかみたい人向け」は2〜4段落です
+- OK: article.html のH3「バイク比較.com｜相見積もりで査定額の差を見たい人向け」は2〜4段落です
+- OK: article.html のH3「バイク買取MAX｜関東で旧車・カスタム・不動車を相談したい人向け」は2〜4段落です
+- OK: article.html のH3「出張買取は動かせないバイクや忙しい人に向いている」は2〜4段落です
+- OK: article.html のH3「店舗持ち込みは対面相談と即時確認を重視する人に向いている」は2〜4段落です
+- OK: article.html のH3「一括査定は査定額比較に強いが連絡対応の準備が必要」は2〜4段落です
+- OK: article.html のH3「入札型・オークション型は交渉窓口を減らしたい人に向いている」は2〜4段落です
+- OK: article.html のH3「基本書類は車検証・登録書類・本人確認書類から確認する」は2〜4段落です
+- OK: article.html のH3「ローン中のバイクは所有者欄と残債処理を確認する」は2〜4段落です
+- OK: article.html のH3「自賠責保険・軽自動車税・ナンバーの扱いも確認する」は2〜4段落です
+- OK: article.html のH3「バイク買取はどこに依頼するのがおすすめですか？」は2〜4段落です
+- OK: article.html のH3「バイクの査定は何社くらい比較すべきですか？」は2〜4段落です
+- OK: article.html のH3「出張査定と店舗持ち込みはどちらがよいですか？」は2〜4段落です
+- OK: article.html のH3「一括査定を利用すると営業電話が増えますか？」は2〜4段落です
+- OK: article.html のH3「査定後に売却を断ることはできますか？」は2〜4段落です
+- OK: article.html のH3「バイク売却時にはどのような書類が必要ですか？」は2〜4段落です
+- OK: article.html のH3「ローンが残っているバイクでも売却できますか？」は2〜4段落です
+- OK: article.html のH3「不動車・事故車・カスタムバイクでも査定を依頼できますか？」は2〜4段落です
+- OK: article-linked.html はGutenbergブロックとして有効です
+- OK: article-linked.html にH1はありません
+- OK: article-linked.html の目次・見出し構造検証を確認しました
+- OK: article-linked.html のH2/H3件数を確認しました
+- OK: article-linked.html の隣接テーブル重複を確認しました
+- OK: article-linked.html のH2連続構造を確認しました
+- OK: article-linked.html の通常リンクを確認しました
+- OK: article-linked.html の冒頭ラベルを確認しました
+- OK: article-linked.html のH3「査定額だけでなく手数料・出張料・引取料を確認する」は2〜4段落です
+- OK: article-linked.html のH3「査定後と契約後のキャンセル条件を分けて見る」は2〜4段落です
+- OK: article-linked.html のH3「一括査定は査定額比較と営業電話のバランスで選ぶ」は2〜4段落です
+- OK: article-linked.html のH3「対応エリアと車両状態を事前に伝える」は2〜4段落です
+- OK: article-linked.html のH3「バイク王｜全国規模の出張買取を相談したい人向け」は2〜4段落です
+- OK: article-linked.html のH3「カチエックス｜写真をもとに複数社の入札を比較したい人向け」は2〜4段落です
+- OK: article-linked.html のH3「グーバイク買取｜相場を見ながら売却を進めたい人向け」は2〜4段落です
+- OK: article-linked.html のH3「バイクランド｜出張査定の費用条件を重視する人向け」は2〜4段落です
+- OK: article-linked.html のH3「バイクワン｜事故車・不動車を含めて相談したい人向け」は2〜4段落です
+- OK: article-linked.html のH3「レッドバロン｜店舗網と手続き対応を重視する人向け」は2〜4段落です
+- OK: article-linked.html のH3「バイク館｜事前に自動査定で相場感をつかみたい人向け」は2〜4段落です
+- OK: article-linked.html のH3「バイク比較.com｜相見積もりで査定額の差を見たい人向け」は2〜4段落です
+- OK: article-linked.html のH3「バイク買取MAX｜関東で旧車・カスタム・不動車を相談したい人向け」は2〜4段落です
+- OK: article-linked.html のH3「出張買取は動かせないバイクや忙しい人に向いている」は2〜4段落です
+- OK: article-linked.html のH3「店舗持ち込みは対面相談と即時確認を重視する人に向いている」は2〜4段落です
+- OK: article-linked.html のH3「一括査定は査定額比較に強いが連絡対応の準備が必要」は2〜4段落です
+- OK: article-linked.html のH3「入札型・オークション型は交渉窓口を減らしたい人に向いている」は2〜4段落です
+- OK: article-linked.html のH3「基本書類は車検証・登録書類・本人確認書類から確認する」は2〜4段落です
+- OK: article-linked.html のH3「ローン中のバイクは所有者欄と残債処理を確認する」は2〜4段落です
+- OK: article-linked.html のH3「自賠責保険・軽自動車税・ナンバーの扱いも確認する」は2〜4段落です
+- OK: article-linked.html のH3「バイク買取はどこに依頼するのがおすすめですか？」は2〜4段落です
+- OK: article-linked.html のH3「バイクの査定は何社くらい比較すべきですか？」は2〜4段落です
+- OK: article-linked.html のH3「出張査定と店舗持ち込みはどちらがよいですか？」は2〜4段落です
+- OK: article-linked.html のH3「一括査定を利用すると営業電話が増えますか？」は2〜4段落です
+- OK: article-linked.html のH3「査定後に売却を断ることはできますか？」は2〜4段落です
+- OK: article-linked.html のH3「バイク売却時にはどのような書類が必要ですか？」は2〜4段落です
+- OK: article-linked.html のH3「ローンが残っているバイクでも売却できますか？」は2〜4段落です
+- OK: article-linked.html のH3「不動車・事故車・カスタムバイクでも査定を依頼できますか？」は2〜4段落です
+- OK: article-decorated.html はGutenbergブロックとして有効です
+- OK: article-decorated.html にH1はありません
+- OK: article-decorated.html の目次・見出し構造検証を確認しました
+- OK: article-decorated.html のH2/H3件数を確認しました
+- OK: article-decorated.html の隣接テーブル重複を確認しました
+- OK: article-decorated.html のH2連続構造を確認しました
+- OK: article-decorated.html の通常リンクを確認しました
+- OK: article-decorated.html の冒頭ラベルを確認しました
+- OK: article-decorated.html のH3「査定額だけでなく手数料・出張料・引取料を確認する」は2〜4段落です
+- OK: article-decorated.html のH3「査定後と契約後のキャンセル条件を分けて見る」は2〜4段落です
+- OK: article-decorated.html のH3「一括査定は査定額比較と営業電話のバランスで選ぶ」は2〜4段落です
+- OK: article-decorated.html のH3「対応エリアと車両状態を事前に伝える」は2〜4段落です
+- OK: article-decorated.html のH3「バイク王｜全国規模の出張買取を相談したい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「カチエックス｜写真をもとに複数社の入札を比較したい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「グーバイク買取｜相場を見ながら売却を進めたい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「バイクランド｜出張査定の費用条件を重視する人向け」は2〜4段落です
+- OK: article-decorated.html のH3「バイクワン｜事故車・不動車を含めて相談したい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「レッドバロン｜店舗網と手続き対応を重視する人向け」は2〜4段落です
+- OK: article-decorated.html のH3「バイク館｜事前に自動査定で相場感をつかみたい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「バイク比較.com｜相見積もりで査定額の差を見たい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「バイク買取MAX｜関東で旧車・カスタム・不動車を相談したい人向け」は2〜4段落です
+- OK: article-decorated.html のH3「出張買取は動かせないバイクや忙しい人に向いている」は2〜4段落です
+- OK: article-decorated.html のH3「店舗持ち込みは対面相談と即時確認を重視する人に向いている」は2〜4段落です
+- OK: article-decorated.html のH3「一括査定は査定額比較に強いが連絡対応の準備が必要」は2〜4段落です
+- OK: article-decorated.html のH3「入札型・オークション型は交渉窓口を減らしたい人に向いている」は2〜4段落です
+- OK: article-decorated.html のH3「基本書類は車検証・登録書類・本人確認書類から確認する」は2〜4段落です
+- OK: article-decorated.html のH3「ローン中のバイクは所有者欄と残債処理を確認する」は2〜4段落です
+- OK: article-decorated.html のH3「自賠責保険・軽自動車税・ナンバーの扱いも確認する」は2〜4段落です
+- OK: article-decorated.html のH3「バイク買取はどこに依頼するのがおすすめですか？」は2〜4段落です
+- OK: article-decorated.html のH3「バイクの査定は何社くらい比較すべきですか？」は2〜4段落です
+- OK: article-decorated.html のH3「出張査定と店舗持ち込みはどちらがよいですか？」は2〜4段落です
+- OK: article-decorated.html のH3「一括査定を利用すると営業電話が増えますか？」は2〜4段落です
+- OK: article-decorated.html のH3「査定後に売却を断ることはできますか？」は2〜4段落です
+- OK: article-decorated.html のH3「バイク売却時にはどのような書類が必要ですか？」は2〜4段落です
+- OK: article-decorated.html のH3「ローンが残っているバイクでも売却できますか？」は2〜4段落です
+- OK: article-decorated.html のH3「不動車・事故車・カスタムバイクでも査定を依頼できますか？」は2〜4段落です
+- OK: article-linked.html の外部URLは採用リンク資料と一致しています
+- OK: article-linked.htmlとarticle-decorated.htmlの通常リンク一致を確認しました
+- OK: 本文文字数は目標から大きく外れていません
+- OK: 外部URLのベタ書きは検出されません
+- OK: .env はコミット対象ではありません
+- OK: 認証情報・nonceの残存は検出されませんでした
+- OK: WordPress投稿ステータスはwp:draftでdraft固定です

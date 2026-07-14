@@ -148,6 +148,24 @@ function normalizeSegment(html, stats) {
   return out.join('');
 }
 
+
+function ensureHeadingBlockAnchors(html) {
+  return String(html).replace(/<!--\s*wp:heading\s*(\{[^>]*?\})?\s*-->\s*(<h([2-6])\b([^>]*)>[\s\S]*?<\/h\3>)\s*<!--\s*\/wp:heading\s*-->/gi, (match, rawAttrs, headingHtml, level, attrs) => {
+    const id = (attrs.match(/\sid=["']([^"']+)["']/i) || [])[1] || '';
+    const classValue = (attrs.match(/\sclass=["']([^"']*)["']/i) || [])[1] || '';
+    let fixedHeading = headingHtml;
+    if (!/\bwp-block-heading\b/.test(classValue)) {
+      if (/\sclass=["'][^"']*["']/i.test(fixedHeading)) fixedHeading = fixedHeading.replace(/\sclass=(["'])([^"']*)\1/i, (_m, q, v) => ` class=${q}${v ? `${v} ` : ''}wp-block-heading${q}`);
+      else fixedHeading = fixedHeading.replace(new RegExp(`<h${level}\\b`, 'i'), `<h${level} class="wp-block-heading"`);
+    }
+    let attrsObj = {};
+    try { attrsObj = rawAttrs ? JSON.parse(rawAttrs) : {}; } catch { return match; }
+    attrsObj.level = Number(attrsObj.level || level);
+    if (id) attrsObj.anchor = id; else delete attrsObj.anchor;
+    return `<!-- wp:heading ${JSON.stringify(attrsObj)} -->\n${fixedHeading}\n<!-- /wp:heading -->`;
+  });
+}
+
 export function normalizeGutenbergBlocks(html) {
   const content = stripFrontMatter(html);
   const re = /<!--\s*(\/?)wp:([a-z0-9-]+(?:\/[a-z0-9-]+)?)([\s\S]*?)\s*(\/?)-->/gi;
@@ -161,7 +179,7 @@ export function normalizeGutenbergBlocks(html) {
     last = re.lastIndex;
   }
   if (last < content.length) out += depth === 0 ? normalizeSegment(content.slice(last), stats) : content.slice(last);
-  return { html: out.replace(/\n{3,}/g, '\n\n').trim() + '\n', stats };
+  return { html: ensureHeadingBlockAnchors(out.replace(/\n{3,}/g, '\n\n').trim() + '\n'), stats };
 }
 
 function blockRanges(content) {
@@ -240,7 +258,18 @@ export function validateGutenbergContent(html, { title = '' } = {}) {
   for (const h of h2s) {
     if (!h.id) errors.push(`H2 id is missing: ${h.text}`);
     const attrs = blockAttributes(content, 'heading', h.index);
-    if (attrs?.anchor && attrs.anchor !== h.id) errors.push(`H2 anchor does not match id: ${attrs.anchor} != ${h.id}`);
+    if (!attrs?.anchor) errors.push(`H2 anchor is missing: ${h.text}`);
+    else if (attrs.anchor !== h.id) errors.push(`H2 anchor does not match id: ${attrs.anchor} != ${h.id}`);
+  }
+  const h3s = [...content.matchAll(/<h3\b([^>]*)>([\s\S]*?)<\/h3>/gi)].map(x => {
+    const id = (x[1].match(/\sid=["']([^"']+)["']/i) || [])[1] || '';
+    return { id, text: normalizeVisibleText(x[2]), index: x.index, attrs: x[1] };
+  });
+  for (const h of h3s) {
+    if (!h.id) errors.push(`H3 id is missing: ${h.text}`);
+    const attrs = blockAttributes(content, 'heading', h.index);
+    if (!attrs?.anchor) errors.push(`H3 anchor is missing: ${h.text}`);
+    else if (attrs.anchor !== h.id) errors.push(`H3 anchor does not match id: ${attrs.anchor} != ${h.id}`);
   }
   const secIds = h2s.map(h => h.id).filter(id => /^sec-\d{2}$/.test(id));
   const duplicatedSec = [...new Set(secIds.filter((id, i) => secIds.indexOf(id) !== i))];

@@ -76,3 +76,11 @@ test('validation fails when normal HTML blocks are not wrapped', () => {
   assert.match(errors, /ul \/ ol が wp:list/);
   assert.match(errors, /li が wp:list-item/);
 });
+
+test('normalizes existing Gutenberg heading comments by adding missing anchors from heading ids', () => {
+  const input = `<!-- wp:heading {"level":2} -->\n<h2 class="custom" id="existing-h2">既存H2</h2>\n<!-- /wp:heading -->\n<!-- wp:heading {"level":3} -->\n<h3 id="existing-h3">既存H3</h3>\n<!-- /wp:heading -->`;
+  const { html } = normalizeGutenbergBlocks(input);
+  assert.match(html, /<!-- wp:heading \{"level":2,"anchor":"existing-h2"\} -->\n<h2 class="custom wp-block-heading" id="existing-h2">既存H2<\/h2>/);
+  assert.match(html, /<!-- wp:heading \{"level":3,"anchor":"existing-h3"\} -->\n<h3 class="wp-block-heading" id="existing-h3">既存H3<\/h3>/);
+  assert.equal(normalizeGutenbergBlocks(html).html, html);
+});
