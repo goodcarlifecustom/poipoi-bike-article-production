@@ -246,9 +246,7 @@ test('decorate preserves existing Gutenberg block attributes, nesting, custom bl
     const source=[
       '<!-- wp:group {"className":"outer","style":{"spacing":{"padding":"1rem"}},"backgroundColor":"white","textColor":"black"} -->',
       '<div class="wp-block-group outer has-white-background-color has-black-color">',
-      '<!-- wp:heading {"level":2,"anchor":"keep-anchor","className":"keep-class","align":"wide"} -->',
       '<h2 class="wp-block-heading keep-class" id="keep-anchor">保持する見出し</h2>',
-      '<!-- /wp:heading -->',
       '<!-- wp:paragraph -->',
       '<p>保持する本文です。査定条件を同じ基準で比較することが重要です。</p>',
       '<!-- /wp:paragraph -->',
@@ -259,9 +257,7 @@ test('decorate preserves existing Gutenberg block attributes, nesting, custom bl
       '<!-- wp:html --><div class="raw-html">## Markdown example <script>window.ad=true</script></div><!-- /wp:html -->',
       '</div>',
       '<!-- /wp:group -->',
-      '<!-- wp:heading {"level":2,"anchor":"summary"} -->',
       '<h2 class="wp-block-heading" id="summary">まとめ</h2>',
-      '<!-- /wp:heading -->',
       '<!-- wp:paragraph -->',
       '<p>最後は落ち着いて確認しましょう。重要です。</p>',
       '<!-- /wp:paragraph -->'
@@ -273,7 +269,7 @@ test('decorate preserves existing Gutenberg block attributes, nesting, custom bl
     const two=readFileSync(`articles/${slug}/article-decorated.html`,'utf8');
     assert.equal(two,one);
     assert.match(one,/<!-- wp:group \{"className":"outer","style":\{"spacing":\{"padding":"1rem"\}\},"backgroundColor":"white","textColor":"black"\} -->/);
-    assert.match(one,/<!-- wp:heading \{"level":2,"anchor":"keep-anchor","className":"keep-class","align":"wide"\} -->/);
+    assert.doesNotMatch(one,/<!--\s*\/?wp:heading/);
     assert.match(one,/<h2 class="wp-block-heading keep-class" id="keep-anchor">保持する見出し<\/h2>/);
     assert.match(one,/<!-- wp:columns \{"align":"wide"\} -->/);
     assert.match(one,/<!-- wp:column \{"width":"50%"\} -->/);

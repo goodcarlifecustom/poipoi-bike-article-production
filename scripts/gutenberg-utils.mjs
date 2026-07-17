@@ -123,11 +123,12 @@ function normalizeSegment(html, stats) {
     if (!tag) { out.push(serializeNode(node)); continue; }
     if (tag === 'p') { stats.paragraph++; out.push(block('paragraph', null, serializeNode(node)));  continue; }
     if (/^h[2-6]$/.test(tag)) {
-      const level = Number(tag.slice(1));
       addClass(node.attrs, 'wp-block-heading');
-      const id = attrValue(node.attrs, 'id');
       stats.heading++;
-      out.push(block('heading', id ? { level, anchor: id } : { level }, serializeNode(node))); 
+      // Headings are intentionally plain HTML.  SWELL uses the element id for
+      // navigation, and wrapping it in a core/heading block makes the saved
+      // markup depend on Gutenberg's block serialization.
+      out.push(serializeNode(node));
       continue;
     }
     if (tag === 'figure' && hasClass(node.attrs, 'wp-block-table')) { stats.table++; out.push(block('table', null, serializeNode(node)));  continue; }
@@ -149,25 +150,25 @@ function normalizeSegment(html, stats) {
 }
 
 
-function ensureHeadingBlockAnchors(html) {
-  return String(html).replace(/<!--\s*wp:heading\s*(\{[^>]*?\})?\s*-->\s*(<h([2-6])\b([^>]*)>[\s\S]*?<\/h\3>)\s*<!--\s*\/wp:heading\s*-->/gi, (match, rawAttrs, headingHtml, level, attrs) => {
-    const id = (attrs.match(/\sid=["']([^"']+)["']/i) || [])[1] || '';
-    const classValue = (attrs.match(/\sclass=["']([^"']*)["']/i) || [])[1] || '';
-    let fixedHeading = headingHtml;
+function convertLegacyHeadingBlocks(html) {
+  return String(html).replace(/<!--\s*wp:heading\s*(\{[\s\S]*?\})?\s*-->\s*(<h([2-6])\b([^>]*)>[\s\S]*?<\/h\3>)\s*<!--\s*\/wp:heading\s*-->/gi, (match, rawAttrs, headingHtml, level, attrs) => {
+    let legacy = {};
+    try { legacy = rawAttrs ? JSON.parse(rawAttrs) : {}; } catch { return headingHtml; }
+    const hasId = /\sid=["'][^"']+["']/i.test(attrs);
+    let fixed = headingHtml;
+    // A legacy anchor is only a fallback.  Never replace an author-supplied id.
+    if (!hasId && legacy.anchor) fixed = fixed.replace(new RegExp(`<h${level}\\b`, 'i'), `<h${level} id="${legacy.anchor}"`);
+    const classValue = (fixed.match(/\sclass=["']([^"']*)["']/i) || [])[1] || '';
     if (!/\bwp-block-heading\b/.test(classValue)) {
-      if (/\sclass=["'][^"']*["']/i.test(fixedHeading)) fixedHeading = fixedHeading.replace(/\sclass=(["'])([^"']*)\1/i, (_m, q, v) => ` class=${q}${v ? `${v} ` : ''}wp-block-heading${q}`);
-      else fixedHeading = fixedHeading.replace(new RegExp(`<h${level}\\b`, 'i'), `<h${level} class="wp-block-heading"`);
+      if (/\sclass=["'][^"']*["']/i.test(fixed)) fixed = fixed.replace(/\sclass=(["'])([^"']*)\1/i, (_m, q, v) => ` class=${q}${v ? `${v} ` : ''}wp-block-heading${q}`);
+      else fixed = fixed.replace(new RegExp(`<h${level}\\b`, 'i'), `<h${level} class="wp-block-heading"`);
     }
-    let attrsObj = {};
-    try { attrsObj = rawAttrs ? JSON.parse(rawAttrs) : {}; } catch { return match; }
-    attrsObj.level = Number(attrsObj.level || level);
-    if (id) attrsObj.anchor = id; else delete attrsObj.anchor;
-    return `<!-- wp:heading ${JSON.stringify(attrsObj)} -->\n${fixedHeading}\n<!-- /wp:heading -->`;
+    return fixed;
   });
 }
 
 export function normalizeGutenbergBlocks(html) {
-  const content = stripFrontMatter(html);
+  const content = convertLegacyHeadingBlocks(stripFrontMatter(html));
   const re = /<!--\s*(\/?)wp:([a-z0-9-]+(?:\/[a-z0-9-]+)?)([\s\S]*?)\s*(\/?)-->/gi;
   const stats = { paragraph: 0, heading: 0, table: 0, list: 0, quote: 0, preformatted: 0, separator: 0 };
   let out = '', last = 0, depth = 0, m;
@@ -179,7 +180,7 @@ export function normalizeGutenbergBlocks(html) {
     last = re.lastIndex;
   }
   if (last < content.length) out += depth === 0 ? normalizeSegment(content.slice(last), stats) : content.slice(last);
-  return { html: ensureHeadingBlockAnchors(out.replace(/\n{3,}/g, '\n\n').trim() + '\n'), stats };
+  return { html: out.replace(/\n{3,}/g, '\n\n').trim() + '\n', stats };
 }
 
 function blockRanges(content) {
@@ -208,10 +209,9 @@ export function findUnwrappedHtmlBlocks(html) {
   const ranges = blockRanges(content);
   const issues = [];
   const first = content.replace(/^\s+/, '');
-  if (/^<(p|h[2-6]|figure|ul|ol|blockquote|pre|hr)\b/i.test(first)) issues.push('本文冒頭がGutenbergブロックコメントではなく通常HTMLから始まっています');
+  if (/^<(p|figure|ul|ol|blockquote|pre|hr)\b/i.test(first)) issues.push('本文冒頭がGutenbergブロックコメントではなく通常HTMLから始まっています');
   const checks = [
     { re: /<p\b[^>]*>/gi, names: ['paragraph', 'list'], label: '<p> が wp:paragraph に囲まれていません' },
-    { re: /<h[2-6]\b[^>]*>/gi, names: ['heading'], label: 'h2〜h6 が wp:heading に囲まれていません' },
     { re: /<figure\b(?=[^>]*class=["'][^"']*wp-block-table)/gi, names: ['table'], label: 'figure.wp-block-table が wp:table に囲まれていません' },
     { re: /<table\b[^>]*>/gi, names: ['table'], label: '<table> が wp:table に囲まれていません' },
     { re: /<(ul|ol)\b[^>]*>/gi, names: ['list'], label: 'ul / ol が wp:list に囲まれていません' },
@@ -224,13 +224,6 @@ export function findUnwrappedHtmlBlocks(html) {
     for (const m of content.matchAll(c.re)) if (!insideSwell(ranges, m.index) && !insideCapBoxContent(content, m.index) && !insideRange(ranges, m.index, c.names)) issues.push(c.label);
   }
   return [...new Set(issues)];
-}
-
-function blockAttributes(content, name, index) {
-  const ranges = blockRanges(content).filter(r => r.name === name && index >= r.start && index < r.end).sort((a, b) => b.start - a.start);
-  if (!ranges.length) return null;
-  const event = parseWpBlocks(content.slice(ranges[0].start, ranges[0].contentStart)).find(e => e.name === name && e.type === 'open');
-  return event?.attrs || null;
 }
 
 export function validateGutenbergContent(html, { title = '' } = {}) {
@@ -246,6 +239,7 @@ export function validateGutenbergContent(html, { title = '' } = {}) {
   if (/!\[[^\]]*\]\([^)]*\)/.test(markdownTarget)) errors.push('Markdown image syntax remains');
   if (/```/.test(markdownTarget)) errors.push('Markdown code fences remain');
   if (/<h1\b/i.test(content)) errors.push('H1 is not allowed in article body');
+  if (/<!--\s*\/?wp:heading\b/i.test(content)) errors.push('wp:heading comments are not allowed');
   const meaningfulBlocks = [...content.matchAll(/<!--\s*wp:([a-z0-9-]+(?:\/[a-z0-9-]+)?)/gi)].map(m => m[1]).filter(n => !n.startsWith('/'));
   if (meaningfulBlocks.length === 1 && meaningfulBlocks[0] === 'html') errors.push('article must not be a single wp:html block');
   const ids = [...content.matchAll(/\sid=["']([^"']+)["']/gi)].map(x => x[1]);
@@ -256,20 +250,18 @@ export function validateGutenbergContent(html, { title = '' } = {}) {
     return { id, text: normalizeVisibleText(x[2]), index: x.index, attrs: x[1] };
   });
   for (const h of h2s) {
+    if (!h.text) errors.push('H2 is empty');
     if (!h.id) errors.push(`H2 id is missing: ${h.text}`);
-    const attrs = blockAttributes(content, 'heading', h.index);
-    if (!attrs?.anchor) errors.push(`H2 anchor is missing: ${h.text}`);
-    else if (attrs.anchor !== h.id) errors.push(`H2 anchor does not match id: ${attrs.anchor} != ${h.id}`);
+    if (!/(^|\s)wp-block-heading(\s|$)/.test((h.attrs.match(/\sclass=["']([^"']*)["']/i) || [])[1] || '')) errors.push(`H2 wp-block-heading class is missing: ${h.text}`);
   }
   const h3s = [...content.matchAll(/<h3\b([^>]*)>([\s\S]*?)<\/h3>/gi)].map(x => {
     const id = (x[1].match(/\sid=["']([^"']+)["']/i) || [])[1] || '';
     return { id, text: normalizeVisibleText(x[2]), index: x.index, attrs: x[1] };
   });
   for (const h of h3s) {
+    if (!h.text) errors.push('H3 is empty');
     if (!h.id) errors.push(`H3 id is missing: ${h.text}`);
-    const attrs = blockAttributes(content, 'heading', h.index);
-    if (!attrs?.anchor) errors.push(`H3 anchor is missing: ${h.text}`);
-    else if (attrs.anchor !== h.id) errors.push(`H3 anchor does not match id: ${attrs.anchor} != ${h.id}`);
+    if (!/(^|\s)wp-block-heading(\s|$)/.test((h.attrs.match(/\sclass=["']([^"']*)["']/i) || [])[1] || '')) errors.push(`H3 wp-block-heading class is missing: ${h.text}`);
   }
   const secIds = h2s.map(h => h.id).filter(id => /^sec-\d{2}$/.test(id));
   const duplicatedSec = [...new Set(secIds.filter((id, i) => secIds.indexOf(id) !== i))];
