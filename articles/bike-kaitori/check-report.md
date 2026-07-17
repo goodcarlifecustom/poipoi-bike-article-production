@@ -1,15 +1,142 @@
-# 装飾チェックレポート
+# 品質チェックレポート
 
 - slug: bike-kaitori
 - result: PASS
 
 ## 詳細
 
-- OK: 装飾設定を確認
-- OK: H1なし
-- OK: ID一意
-- OK: この記事でわかることのアンカー実在を確認
-- OK: 記事アウトラインOK
-- OK: 本文マーカーOK (24件)
-- OK: 装飾前後のH2/H3タグ種別と順序を確認
-- OK: 本文テキスト整合
+- OK: input.yml を確認しました
+- OK: metadata.json を確認しました
+- OK: research.md を確認しました
+- OK: serp.md を確認しました
+- OK: headings.csv を確認しました
+- OK: heading-analysis.md を確認しました
+- OK: heading-plan.md を確認しました
+- OK: draft.md を確認しました
+- OK: article.html を確認しました
+- OK: article-linked.html を確認しました
+- OK: article-decorated.html を確認しました
+- OK: external-links.md を確認しました
+- OK: metadata.json は有効なJSONです
+- OK: 承認済み見出し構成を読み込みました
+- OK: research.md は空ではありません
+- OK: main_keyword を確認しました
+- OK: related_keywords 配列を確認しました
+- OK: title は生成済みです
+- OK: slug は生成済みです
+- OK: meta_description は生成済みです
+- OK: search_intent は生成済みです
+- OK: persona は生成済みです
+- OK: article_type は生成済みです
+- OK: target_word_count は生成済みです
+- OK: status: draft を確認しました
+- OK: min_char_count/min_word_count を確認しました
+- OK: target_char_count/target_word_count を確認しました
+- OK: max_char_count/max_word_count を確認しました
+- OK: 文字数設定の大小関係を確認しました
+- OK: wordpress_draft と post_to_wp の整合性を確認しました
+- OK: target_media を確認しました
+- OK: article_type を確認しました
+- OK: persona を確認しました
+- OK: article_purpose を確認しました
+- OK: post_to_wp はbooleanです
+- OK: slug は一致しています
+- OK: メインキーワードは一致しています
+- OK: article.html はGutenbergブロックとして有効です
+- OK: article.html にH1はありません
+- OK: article.html の目次・見出し構造検証を確認しました
+- OK: article.html のH2/H3件数を確認しました
+- OK: article.html の隣接テーブル重複を確認しました
+- OK: article.html のH2連続構造を確認しました
+- OK: article.html の通常リンクを確認しました
+- OK: article.html の冒頭ラベルを確認しました
+- WARN: article.html のH3「ローン中のバイクを売却する場合」が1段落だけで終わっています
+- WARN: article.html のH3「ローン中のバイクを売却する場合」が曖昧な確認促しだけで終わっています
+- WARN: article.html のH3「不動車・事故車・車検切れの場合」が1段落だけで終わっています
+- WARN: article.html のH3「カスタムバイクの場合」が1段落だけで終わっています
+- WARN: article.html のH3「書類を紛失した場合」が1段落だけで終わっています
+- WARN: article.html のH3「バイクの査定だけを依頼してもよいですか？」が1段落だけで終わっています
+- WARN: article.html のH3「バイクの査定だけを依頼してもよいですか？」が100文字未満で完結しています
+- WARN: article.html のH3「査定額に納得できない場合は断れますか？」が1段落だけで終わっています
+- WARN: article.html のH3「査定額に納得できない場合は断れますか？」が100文字未満で完結しています
+- WARN: article.html のH3「バイクを売るときに必要な書類は何ですか？」が1段落だけで終わっています
+- WARN: article.html のH3「車検切れのバイクでも査定できますか？」が1段落だけで終わっています
+- WARN: article.html のH3「車検切れのバイクでも査定できますか？」が100文字未満で完結しています
+- WARN: article.html のH3「ローンが残っているバイクは売れますか？」が1段落だけで終わっています
+- WARN: article.html のH3「ローンが残っているバイクは売れますか？」が100文字未満で完結しています
+- WARN: article.html のH3「ローンが残っているバイクは売れますか？」が曖昧な確認促しだけで終わっています
+- WARN: article.html のH3「不動車や事故車でも買取対象になりますか？」が1段落だけで終わっています
+- WARN: article.html のH3「不動車や事故車でも買取対象になりますか？」が100文字未満で完結しています
+- WARN: article.html のH3「売却前に修理や洗車をしたほうがよいですか？」が1段落だけで終わっています
+- WARN: article.html のH3「売却前に修理や洗車をしたほうがよいですか？」が100文字未満で完結しています
+- WARN: article.html のH3「自賠責保険や税金はどうなりますか？」が1段落だけで終わっています
+- WARN: article.html のH3「自賠責保険や税金はどうなりますか？」が100文字未満で完結しています
+- WARN: article.html のH3「自賠責保険や税金はどうなりますか？」が曖昧な確認促しだけで終わっています
+- OK: article-linked.html はGutenbergブロックとして有効です
+- OK: article-linked.html にH1はありません
+- OK: article-linked.html の目次・見出し構造検証を確認しました
+- OK: article-linked.html のH2/H3件数を確認しました
+- OK: article-linked.html の隣接テーブル重複を確認しました
+- OK: article-linked.html のH2連続構造を確認しました
+- OK: article-linked.html の通常リンクを確認しました
+- OK: article-linked.html の冒頭ラベルを確認しました
+- WARN: article-linked.html のH3「ローン中のバイクを売却する場合」が1段落だけで終わっています
+- WARN: article-linked.html のH3「ローン中のバイクを売却する場合」が曖昧な確認促しだけで終わっています
+- WARN: article-linked.html のH3「不動車・事故車・車検切れの場合」が1段落だけで終わっています
+- WARN: article-linked.html のH3「カスタムバイクの場合」が1段落だけで終わっています
+- WARN: article-linked.html のH3「書類を紛失した場合」が1段落だけで終わっています
+- WARN: article-linked.html のH3「バイクの査定だけを依頼してもよいですか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「バイクの査定だけを依頼してもよいですか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「査定額に納得できない場合は断れますか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「査定額に納得できない場合は断れますか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「バイクを売るときに必要な書類は何ですか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「車検切れのバイクでも査定できますか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「車検切れのバイクでも査定できますか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「ローンが残っているバイクは売れますか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「ローンが残っているバイクは売れますか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「ローンが残っているバイクは売れますか？」が曖昧な確認促しだけで終わっています
+- WARN: article-linked.html のH3「不動車や事故車でも買取対象になりますか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「不動車や事故車でも買取対象になりますか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「売却前に修理や洗車をしたほうがよいですか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「売却前に修理や洗車をしたほうがよいですか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「自賠責保険や税金はどうなりますか？」が1段落だけで終わっています
+- WARN: article-linked.html のH3「自賠責保険や税金はどうなりますか？」が100文字未満で完結しています
+- WARN: article-linked.html のH3「自賠責保険や税金はどうなりますか？」が曖昧な確認促しだけで終わっています
+- OK: article-decorated.html はGutenbergブロックとして有効です
+- OK: article-decorated.html にH1はありません
+- OK: article-decorated.html の目次・見出し構造検証を確認しました
+- OK: article-decorated.html のH2/H3件数を確認しました
+- OK: article-decorated.html の隣接テーブル重複を確認しました
+- OK: article-decorated.html のH2連続構造を確認しました
+- OK: article-decorated.html の通常リンクを確認しました
+- OK: article-decorated.html の冒頭ラベルを確認しました
+- WARN: article-decorated.html のH3「ローン中のバイクを売却する場合」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「ローン中のバイクを売却する場合」が曖昧な確認促しだけで終わっています
+- WARN: article-decorated.html のH3「不動車・事故車・車検切れの場合」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「カスタムバイクの場合」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「書類を紛失した場合」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「バイクの査定だけを依頼してもよいですか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「バイクの査定だけを依頼してもよいですか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「査定額に納得できない場合は断れますか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「査定額に納得できない場合は断れますか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「バイクを売るときに必要な書類は何ですか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「車検切れのバイクでも査定できますか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「車検切れのバイクでも査定できますか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「ローンが残っているバイクは売れますか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「ローンが残っているバイクは売れますか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「ローンが残っているバイクは売れますか？」が曖昧な確認促しだけで終わっています
+- WARN: article-decorated.html のH3「不動車や事故車でも買取対象になりますか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「不動車や事故車でも買取対象になりますか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「売却前に修理や洗車をしたほうがよいですか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「売却前に修理や洗車をしたほうがよいですか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「自賠責保険や税金はどうなりますか？」が1段落だけで終わっています
+- WARN: article-decorated.html のH3「自賠責保険や税金はどうなりますか？」が100文字未満で完結しています
+- WARN: article-decorated.html のH3「自賠責保険や税金はどうなりますか？」が曖昧な確認促しだけで終わっています
+- OK: 採用済みリンク資料に対応する通常リンクを確認しました
+- OK: article-linked.html の外部URLは採用リンク資料と一致しています
+- OK: article-linked.htmlとarticle-decorated.htmlの通常リンク一致を確認しました
+- OK: 本文文字数は目標から大きく外れていません
+- OK: 外部URLのベタ書きは検出されません
+- OK: .env はコミット対象ではありません
+- OK: 認証情報・nonceの残存は検出されませんでした
+- OK: WordPress投稿ステータスはwp:draftでdraft固定です
