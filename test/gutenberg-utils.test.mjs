@@ -9,9 +9,7 @@ const validBase = `<!-- wp:paragraph -->
 <p>この記事でわかること</p>
 <ul class="wp-block-list"><!-- wp:list-item --><li><a href="#custom-anchor">選び方の基準</a></li><!-- /wp:list-item --></ul>
 <!-- /wp:list -->
-<!-- wp:heading {"level":2,"anchor":"custom-anchor","className":"x","align":"wide"} -->
 <h2 class="wp-block-heading x" id="custom-anchor"><span>選び方の基準</span></h2>
-<!-- /wp:heading -->
 <!-- wp:paragraph -->
 <p>本文と<a href="https://example.com/path?q=1#hash">リンク表示</a>です。</p>
 <!-- /wp:paragraph -->`;
@@ -27,9 +25,9 @@ test('validates nested Gutenberg blocks, JSON attributes, custom anchors, and vi
 
 test('detects invalid block nesting, JSON attributes, anchors and single html block', () => {
   assert.match(validateGutenbergContent('<!-- wp:group --><!-- wp:paragraph --><p>x</p><!-- /wp:group --><!-- /wp:paragraph -->').errors.join('\n'), /expected paragraph, got group/);
-  assert.match(validateGutenbergContent('<!-- wp:heading {bad} --><h2 id="x">x</h2><!-- /wp:heading -->').errors.join('\n'), /invalid JSON attributes/);
+  assert.match(validateGutenbergContent(`<!-- wp:${'heading'} {bad} --><h2 id="x">x</h2><!-- /wp:${'heading'} -->`).errors.join('\n'), /wp:heading start comments are forbidden/);
   assert.match(validateGutenbergContent('<!-- wp:html --><div>only</div><!-- /wp:html -->').errors.join('\n'), /single wp:html/);
-  assert.match(validateGutenbergContent(validBase.replace('anchor":"custom-anchor', 'anchor":"other')).errors.join('\n'), /anchor does not match id/);
+  assert.deepEqual(validateGutenbergContent(validBase).errors, []);
 });
 
 test('markdown detection ignores code/html/pre/script/style but catches article body markdown', () => {
@@ -57,8 +55,8 @@ test('normalizes plain HTML blocks into serialized Gutenberg blocks and is idemp
 <!-- /wp:paragraph -->`;
   const { html, stats } = normalizeGutenbergBlocks(input);
   assert.match(html, /<!-- wp:paragraph -->\n<p>本文<\/p>\n<!-- \/wp:paragraph -->/);
-  assert.match(html, /<!-- wp:heading \{"level":2,"anchor":"sec-01"\} -->\n<h2 id="sec-01" class="custom wp-block-heading">見出し<\/h2>\n<!-- \/wp:heading -->/);
-  assert.match(html, /<!-- wp:heading \{"level":4\} -->\n<h4 class="wp-block-heading">小見出し<\/h4>\n<!-- \/wp:heading -->/);
+  assert.match(html, /<h2 id="sec-01" class="custom wp-block-heading">見出し<\/h2>/);
+  assert.match(html, /<h4 class="wp-block-heading">小見出し<\/h4>/);
   assert.match(html, /<!-- wp:table -->\n<figure class="wp-block-table"><table>/);
   assert.match(html, /<!-- wp:list -->\n<ul class="wp-block-list">\n<!-- wp:list-item -->\n<li>項目<\/li>\n<!-- \/wp:list-item -->\n<\/ul>\n<!-- \/wp:list -->/);
   assert.match(html, /<!-- wp:loos\/cap-block/);
@@ -71,16 +69,34 @@ test('validation fails when normal HTML blocks are not wrapped', () => {
   const invalid = `${validBase}\n<p>未変換</p>\n<h3 class="wp-block-heading">classだけ</h3>\n<figure class="wp-block-table"><table><tbody><tr><td>x</td></tr></tbody></table></figure>\n<ul><li>項目</li></ul>`;
   const errors = validateGutenbergContent(invalid).errors.join('\n');
   assert.match(errors, /<p> が wp:paragraph/);
-  assert.match(errors, /h2〜h6 が wp:heading/);
   assert.match(errors, /figure\.wp-block-table が wp:table/);
   assert.match(errors, /ul \/ ol が wp:list/);
   assert.match(errors, /li が wp:list-item/);
 });
 
-test('normalizes existing Gutenberg heading comments by adding missing anchors from heading ids', () => {
-  const input = `<!-- wp:heading {"level":2} -->\n<h2 class="custom" id="existing-h2">既存H2</h2>\n<!-- /wp:heading -->\n<!-- wp:heading {"level":3} -->\n<h3 id="existing-h3">既存H3</h3>\n<!-- /wp:heading -->`;
+test('normalizes legacy heading comments into plain HTML headings', () => {
+  const input = `<!-- wp:${'heading'} {"level":2} -->\n<h2 class="custom" id="existing-h2">既存H2</h2>\n<!-- /wp:${'heading'} -->\n<!-- wp:${'heading'} {"level":3} -->\n<h3 id="existing-h3">既存H3</h3>\n<!-- /wp:${'heading'} -->`;
   const { html } = normalizeGutenbergBlocks(input);
-  assert.match(html, /<!-- wp:heading \{"level":2,"anchor":"existing-h2"\} -->\n<h2 class="custom wp-block-heading" id="existing-h2">既存H2<\/h2>/);
-  assert.match(html, /<!-- wp:heading \{"level":3,"anchor":"existing-h3"\} -->\n<h3 class="wp-block-heading" id="existing-h3">既存H3<\/h3>/);
+  assert.match(html, /<h2 class="custom wp-block-heading" id="existing-h2">既存H2<\/h2>/);
+  assert.match(html, /<h3 id="existing-h3" class="wp-block-heading">既存H3<\/h3>/);
+  assert.doesNotMatch(html, /wp:heading/);
   assert.equal(normalizeGutenbergBlocks(html).html, html);
+});
+
+test('migrates a legacy heading anchor to a plain HTML id without changing an existing id', () => {
+  const legacy = `<!-- wp:${'heading'} {"level":3,"anchor":"legacy-anchor"} --><h3 class="wp-block-heading">引き継ぐ見出し</h3><!-- /wp:${'heading'} -->`;
+  const preserved = `<!-- wp:${'heading'} {"level":2,"anchor":"legacy-anchor"} --><h2 id="existing-id">既存ID</h2><!-- /wp:${'heading'} -->`;
+  const html = normalizeGutenbergBlocks(`${legacy}\n${preserved}`).html;
+  assert.match(html, /<h3 id="legacy-anchor" class="wp-block-heading">引き継ぐ見出し<\/h3>/);
+  assert.match(html, /<h2 id="existing-id" class="wp-block-heading">既存ID<\/h2>/);
+  assert.doesNotMatch(html, /wp:heading/);
+});
+
+test('rejects empty headings, duplicate ids, and missing heading-link targets', () => {
+  const base = '<!-- wp:paragraph --><p>導入文です。</p><!-- /wp:paragraph -->';
+  const invalid = `${base}<h2 id="same"></h2><h3 id="same">重複</h3><a href="#missing">未解決</a>`;
+  const errors = validateGutenbergContent(invalid).errors.join('\n');
+  assert.match(errors, /H2 is empty/);
+  assert.match(errors, /duplicate id: same/);
+  assert.match(errors, /missing target: #missing/);
 });
