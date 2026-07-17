@@ -48,5 +48,5 @@
 
 - 装飾工程では、記事冒頭にシステム生成のSWELL capbox「【この記事でわかること】」を配置し、全H2へのアンカーリンクをH2順・H2文言一致で出力する。
 - H3が3件以上あるH2配下では、H2導入文の直後にシステム生成のSWELL capbox「この章でわかること」を配置し、配下の全H3へのアンカーリンクをH3順・H3文言一致で出力する。
-- H2/H3はHTMLのidとGutenberg `wp:heading` コメントの`anchor`を必ず一致させ、`class="wp-block-heading"`を付与する。既存の有効なIDは維持し、IDがない場合だけ安定IDを生成する。
+- H2/H3はHTMLタグだけで記述し、`class="wp-block-heading"`と一意の意味のある`id`を付与する。`wp:heading`開始・終了コメントは一切出力しない。既存の有効なIDは維持する。
 - 手動目次、`nav`、`[swell_toc]`、`[toc]`は引き続き禁止し、例外はシステム生成capboxのみとする。

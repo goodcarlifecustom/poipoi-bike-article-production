@@ -148,7 +148,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-10-01",
+        "id": "cases-loan",
         "heading": "ローン中のバイクを売却する場合"
       },
       "paragraph_index": 0,
@@ -159,7 +159,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-10-02",
+        "id": "cases-non-running-accident",
         "heading": "不動車・事故車・車検切れの場合"
       },
       "paragraph_index": 0,
@@ -170,7 +170,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-10-03",
+        "id": "cases-custom",
         "heading": "カスタムバイクの場合"
       },
       "paragraph_index": 0,
@@ -181,7 +181,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-10-04",
+        "id": "cases-lost-documents",
         "heading": "書類を紛失した場合"
       },
       "paragraph_index": 0,
@@ -192,7 +192,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-01",
+        "id": "faq-assessment-only",
         "heading": "バイクの査定だけを依頼してもよいですか？"
       },
       "paragraph_index": 0,
@@ -203,7 +203,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-02",
+        "id": "faq-decline-appraisal",
         "heading": "査定額に納得できない場合は断れますか？"
       },
       "paragraph_index": 0,
@@ -214,7 +214,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-03",
+        "id": "faq-required-documents",
         "heading": "バイクを売るときに必要な書類は何ですか？"
       },
       "paragraph_index": 0,
@@ -225,7 +225,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-04",
+        "id": "faq-expired-inspection",
         "heading": "車検切れのバイクでも査定できますか？"
       },
       "paragraph_index": 0,
@@ -236,7 +236,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-05",
+        "id": "faq-loan-balance",
         "heading": "ローンが残っているバイクは売れますか？"
       },
       "paragraph_index": 0,
@@ -247,7 +247,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-06",
+        "id": "faq-non-running-accident",
         "heading": "不動車や事故車でも買取対象になりますか？"
       },
       "paragraph_index": 0,
@@ -258,7 +258,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-07",
+        "id": "faq-repair-wash",
         "heading": "売却前に修理や洗車をしたほうがよいですか？"
       },
       "paragraph_index": 0,
@@ -269,7 +269,7 @@
     {
       "section": {
         "level": 3,
-        "id": "h2-section-11-08",
+        "id": "faq-insurance-tax",
         "heading": "自賠責保険や税金はどうなりますか？"
       },
       "paragraph_index": 0,

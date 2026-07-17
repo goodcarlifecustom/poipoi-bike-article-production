@@ -22,9 +22,7 @@ function tmpArticle(slug,postToWp=true){const d=path.join(root,'articles',slug);
 <!-- /wp:list-item -->
 </ul>
 <!-- /wp:list -->
-<!-- wp:heading {"level":2,"anchor":"sec-01"} -->
 <h2 class="wp-block-heading" id="sec-01">見出し</h2>
-<!-- /wp:heading -->
 <!-- wp:paragraph -->
 <p><span class="swl-marker mark_yellow">本文です。</span></p>
 <!-- /wp:paragraph -->`; writeFileSync(path.join(d,'article-decorated.html'),html); writeFileSync(path.join(d,'metadata.json'),JSON.stringify({title:'テスト記事',slug,target_keyword:'x',related_keywords:['y'],status:'draft',post_to_wp:postToWp,wordpress_draft_id:null,wordpress_draft_url:null},null,2)); return d;}

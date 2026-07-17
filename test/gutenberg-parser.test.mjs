@@ -21,9 +21,9 @@ for (const slug of ['bike-kaitori-osusume', 'bike-kaitori']) {
     const blockNames = blocks.map(b => b.blockName);
     assert.equal(findUnwrappedHtmlBlocks(html).length, 0);
     assert.equal(normalizeGutenbergBlocks(html).html, html);
-    assert.ok(blocks.filter((b) => !b.blockName).every((b) => !String(b.innerHTML || '').trim()), 'non-empty freeform blocks must not remain');
+    assert.ok(blocks.filter((b) => !b.blockName).some((b) => /<h[23]\b/i.test(String(b.innerHTML || ''))), 'plain HTML headings remain intentionally freeform');
     assert.ok(blockNames.includes('core/paragraph'));
-    assert.ok(blockNames.includes('core/heading'));
+    assert.ok(!html.includes(`wp:${'heading'}`));
     assert.ok(blockNames.includes('core/list'));
     if (html.includes('wp-block-table')) assert.ok(blockNames.includes('core/table'));
     assert.ok(blockNames.includes('loos/cap-block'));

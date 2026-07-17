@@ -60,15 +60,11 @@ test('E2E normalizes job, decorates, checks, and posts mocked draft payload safe
       '<!-- wp:paragraph -->',
       '<p>この記事では、Gutenberg形式の本文を安全に下書き投稿する流れを説明します。</p>',
       '<!-- /wp:paragraph -->',
-      '<!-- wp:heading {"level":2,"anchor":"sec-01"} -->',
       '<h2 class="wp-block-heading" id="sec-01">投稿前に確認すること</h2>',
-      '<!-- /wp:heading -->',
       '<!-- wp:paragraph -->',
       '<p>投稿前には本文、リンク、表、アンカーが保たれているかを確認しましょう。重要です。</p>',
       '<!-- /wp:paragraph -->',
-      '<!-- wp:heading {"level":2,"anchor":"sec-02"} -->',
       '<h2 class="wp-block-heading" id="sec-02">まとめ</h2>',
-      '<!-- /wp:heading -->',
       '<!-- wp:paragraph -->',
       '<p>最後に、WordPressへ送るpayloadがdraft固定であることを確認します。重要です。</p>',
       '<!-- /wp:paragraph -->'
@@ -91,7 +87,7 @@ test('E2E normalizes job, decorates, checks, and posts mocked draft payload safe
     const sentBlocks = parse(captured.content).map((b) => b.blockName);
     const rawBlocks = parse(decorated).map((b) => b.blockName);
     assert.deepEqual(sentBlocks, rawBlocks);
-    assert.ok(parse(captured.content).filter((b) => !b.blockName).every((b) => !String(b.innerHTML || '').trim()));
+    assert.ok(parse(captured.content).filter((b) => !b.blockName).some((b) => /<h2\b/i.test(String(b.innerHTML || ''))));
     assert.match(captured.content, /<!-- wp:/);
     assert.doesNotMatch(captured.content, /^---/m);
     assert.doesNotMatch(captured.content, /metadata|作業ログ|rendered/i);

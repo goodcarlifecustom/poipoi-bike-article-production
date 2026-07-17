@@ -47,3 +47,7 @@ test('FAIL: H3 before first H2 and duplicate H3',()=>{
 test('FAIL: unapproved title contaminates opening body',()=>{
   ng('<p>別記事タイトル案</p><h2>選び方</h2><p>本文です。</p>',/未採用タイトル/,{metadata:{unused_titles:['別記事タイトル案']}});
 });
+
+test('PASS: plain HTML headings validate against an H2-only approved outline',()=>{
+  ok('<h2 id="cases">ケース別</h2><p>本文です。</p><h3 id="loan">ローン中</h3><p>本文です。</p><h2 id="faq">質問</h2><p>本文です。</p><h3 id="cancel">断り方</h3><p>本文です。</p>', {approvedOutline:[{level:2,text:'ケース別'},{level:2,text:'質問'}]});
+});

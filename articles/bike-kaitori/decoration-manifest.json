@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source_file": "article-linked.html",
-  "source_sha256": "3b543153000a260d75bb702bf4edeab28de379b2f444c6dea5798053626ff6b4",
-  "config_sha256": "fe76c15246e46135415bdb7741dc488d23f446cbeb9aa076d73aac8f1a13e528",
-  "decorated_sha256": "abf9ff338e00221d01dbbdb649a95bf45134474c466ad1055a8fecf0f1c19de8"
+  "source_sha256": "9b7faba39f2c74a793bc6d740c7673af6501f5594c7b6ced304a49571bc87f62",
+  "config_sha256": "a6987da5673dc0d2535f14c6cb26fcada7a27909f663c443d53007d392fc341b",
+  "decorated_sha256": "2799c840ef619f42ca3e713a971ed2676381ccb3796f26f25f78f090d9c71178"
 }
