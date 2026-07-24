@@ -1,0 +1,1467 @@
+{
+  "spec_version": "1.1",
+  "approval_status": "APPROVED_FOR_CODEX",
+  "blocking_issues": [],
+  "target_media": null,
+  "codex_project": "poipoi-bike-article-production",
+  "article_directory": "articles/ero-tsuwa-app/",
+  "article_type": "new_article",
+  "output_mode": "files_only",
+  "wordpress_target": null,
+  "advertising_relationship": "none",
+  "main_keyword": "エロ通話 アプリ",
+  "related_keywords": [
+    "エロビデオ通話アプリ",
+    "エロ通話アプリ おすすめ",
+    "エロ通話アプリ 無料",
+    "無料ポイント",
+    "料金",
+    "選び方",
+    "ライブチャット",
+    "ビデオ通話",
+    "音声通話",
+    "チャット",
+    "サクラ",
+    "安全性",
+    "年齢確認",
+    "顔出しなし",
+    "カメラオフ"
+  ],
+  "target_character_count": 30000,
+  "minimum_character_count": 26000,
+  "maximum_character_count": 36000,
+  "audience": "18歳以上の成人ユーザー",
+  "information_checked_at": "2026-07-24",
+  "content_policy": {
+    "adult_audience_only": true,
+    "minimum_age": 18,
+    "high_school_students_excluded": true,
+    "prohibited_guidance": [
+      "年齢確認や本人確認の回避",
+      "無断録画や無断転載",
+      "規約違反や課金回避",
+      "対面で会うことや連絡先交換の推奨"
+    ]
+  },
+  "search_intent": {
+    "primary": "エロ通話アプリのおすすめ、料金、安全性を比較したい",
+    "explicit_needs": [
+      "おすすめ",
+      "料金",
+      "無料ポイント",
+      "安全性"
+    ],
+    "latent_needs": [
+      "使いすぎ防止",
+      "身元情報の扱い",
+      "ブラウザ型との違い"
+    ],
+    "final_decision_goal": "予算と安全条件に合うサービスを選ぶ",
+    "intent_priority": [
+      "比較",
+      "料金",
+      "安全性",
+      "使い方"
+    ]
+  },
+  "serp_findings": {
+    "common_topics": [
+      "ランキング",
+      "料金表",
+      "無料ポイント",
+      "FAQ"
+    ],
+    "content_gaps": [
+      "年齢確認と本人確認の区別",
+      "対面目的ではない注意",
+      "録画等の禁止事項"
+    ],
+    "differentiation_strategy": "公式確認日と不明点を明示"
+  },
+  "title_candidates": [
+    {
+      "title": "エロ通話アプリおすすめ6選｜料金・無料ポイント・安全な選び方を比較",
+      "strength": "比較意図に合う"
+    },
+    {
+      "title": "エロ通話アプリの選び方と料金を初心者向けに解説",
+      "strength": "初心者向け"
+    },
+    {
+      "title": "無料ポイントで試せるエロ通話アプリ比較",
+      "strength": "無料ニーズ"
+    }
+  ],
+  "selected_title": "エロ通話アプリおすすめ6選｜料金・無料ポイント・安全な選び方を比較",
+  "slug": "ero-tsuwa-app",
+  "meta_description": "エロ通話アプリを18歳以上の成人向けに比較。公式情報をもとに料金、無料ポイント、年齢確認、顔出しなし、カメラオフ、安全性、退会時の注意点を解説します。",
+  "approved_headings": [
+    {
+      "sequence": 1,
+      "level": 2,
+      "h2_id": "h2-01",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリおすすめ6選"
+    },
+    {
+      "sequence": 2,
+      "level": 3,
+      "h3_id": "h2-01-h3-01",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ1位はVI-VO"
+    },
+    {
+      "sequence": 3,
+      "level": 3,
+      "h3_id": "h2-01-h3-02",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ2位はジュエルライブ"
+    },
+    {
+      "sequence": 4,
+      "level": 3,
+      "h3_id": "h2-01-h3-03",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ3位はエンジェルライブ"
+    },
+    {
+      "sequence": 5,
+      "level": 3,
+      "h3_id": "h2-01-h3-04",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ4位はマダムライブ"
+    },
+    {
+      "sequence": 6,
+      "level": 3,
+      "h3_id": "h2-01-h3-05",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ5位はFANZAライブチャット"
+    },
+    {
+      "sequence": 7,
+      "level": 3,
+      "h3_id": "h2-01-h3-06",
+      "parent_h2_id": "h2-01",
+      "heading": "おすすめ6位はライブでゴーゴー"
+    },
+    {
+      "sequence": 8,
+      "level": 2,
+      "h2_id": "h2-02",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリの選び方"
+    },
+    {
+      "sequence": 9,
+      "level": 3,
+      "h3_id": "h2-02-h3-01",
+      "parent_h2_id": "h2-02",
+      "heading": "本人確認と運営会社の信頼性で選ぶ"
+    },
+    {
+      "sequence": 10,
+      "level": 3,
+      "h3_id": "h2-02-h3-02",
+      "parent_h2_id": "h2-02",
+      "heading": "通話料金とポイント換算率で選ぶ"
+    },
+    {
+      "sequence": 11,
+      "level": 3,
+      "h3_id": "h2-02-h3-03",
+      "parent_h2_id": "h2-02",
+      "heading": "初回無料ポイントの多さで選ぶ"
+    },
+    {
+      "sequence": 12,
+      "level": 3,
+      "h3_id": "h2-02-h3-04",
+      "parent_h2_id": "h2-02",
+      "heading": "登録している女性の人数で選ぶ"
+    },
+    {
+      "sequence": 13,
+      "level": 3,
+      "h3_id": "h2-02-h3-05",
+      "parent_h2_id": "h2-02",
+      "heading": "好みの女性ジャンルで選ぶ"
+    },
+    {
+      "sequence": 14,
+      "level": 3,
+      "h3_id": "h2-02-h3-06",
+      "parent_h2_id": "h2-02",
+      "heading": "割引キャンペーンの充実度で選ぶ"
+    },
+    {
+      "sequence": 15,
+      "level": 2,
+      "h2_id": "h2-03",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリとはどのようなサービスなのか"
+    },
+    {
+      "sequence": 16,
+      "level": 3,
+      "h3_id": "h2-03-h3-01",
+      "parent_h2_id": "h2-03",
+      "heading": "女性とリアルタイムで通話できる仕組み"
+    },
+    {
+      "sequence": 17,
+      "level": 3,
+      "h3_id": "h2-03-h3-02",
+      "parent_h2_id": "h2-03",
+      "heading": "一般的なライブチャットとの違い"
+    },
+    {
+      "sequence": 18,
+      "level": 3,
+      "h3_id": "h2-03-h3-03",
+      "parent_h2_id": "h2-03",
+      "heading": "出会い系アプリとの違い"
+    },
+    {
+      "sequence": 19,
+      "level": 3,
+      "h3_id": "h2-03-h3-04",
+      "parent_h2_id": "h2-03",
+      "heading": "ポイント制を中心とした料金システム"
+    },
+    {
+      "sequence": 20,
+      "level": 2,
+      "h2_id": "h2-04",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリで楽しめること"
+    },
+    {
+      "sequence": 21,
+      "level": 3,
+      "h3_id": "h2-04-h3-01",
+      "parent_h2_id": "h2-04",
+      "heading": "二人きりのビデオ通話を楽しめる"
+    },
+    {
+      "sequence": 22,
+      "level": 3,
+      "h3_id": "h2-04-h3-02",
+      "parent_h2_id": "h2-04",
+      "heading": "のぞきチャットで相手の映像を視聴できる"
+    },
+    {
+      "sequence": 23,
+      "level": 3,
+      "h3_id": "h2-04-h3-03",
+      "parent_h2_id": "h2-04",
+      "heading": "遠隔操作に対応したおもちゃで遊べる"
+    },
+    {
+      "sequence": 24,
+      "level": 3,
+      "h3_id": "h2-04-h3-04",
+      "parent_h2_id": "h2-04",
+      "heading": "映像を使わず音声通話を楽しめる"
+    },
+    {
+      "sequence": 25,
+      "level": 3,
+      "h3_id": "h2-04-h3-05",
+      "parent_h2_id": "h2-04",
+      "heading": "テキストチャットで会話できる"
+    },
+    {
+      "sequence": 26,
+      "level": 3,
+      "h3_id": "h2-04-h3-06",
+      "parent_h2_id": "h2-04",
+      "heading": "好みの女性を選んで通話できる"
+    },
+    {
+      "sequence": 27,
+      "level": 3,
+      "h3_id": "h2-04-h3-07",
+      "parent_h2_id": "h2-04",
+      "heading": "お気に入り登録した女性と継続的に交流できる"
+    },
+    {
+      "sequence": 28,
+      "level": 2,
+      "h2_id": "h2-05",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリを無料ポイントで楽しむ方法"
+    },
+    {
+      "sequence": 29,
+      "level": 3,
+      "h3_id": "h2-05-h3-01",
+      "parent_h2_id": "h2-05",
+      "heading": "複数のエロ通話アプリで初回無料ポイントを試す"
+    },
+    {
+      "sequence": 30,
+      "level": 3,
+      "h3_id": "h2-05-h3-02",
+      "parent_h2_id": "h2-05",
+      "heading": "のぞき機能で相手の雰囲気を確認する"
+    },
+    {
+      "sequence": 31,
+      "level": 2,
+      "h2_id": "h2-06",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリに関するよくある質問"
+    },
+    {
+      "sequence": 32,
+      "level": 3,
+      "h3_id": "h2-06-h3-01",
+      "parent_h2_id": "h2-06",
+      "heading": "エロ通話アプリは完全無料で利用できますか"
+    },
+    {
+      "sequence": 33,
+      "level": 3,
+      "h3_id": "h2-06-h3-02",
+      "parent_h2_id": "h2-06",
+      "heading": "女性はどこまでリクエストに対応してくれますか"
+    },
+    {
+      "sequence": 34,
+      "level": 3,
+      "h3_id": "h2-06-h3-03",
+      "parent_h2_id": "h2-06",
+      "heading": "特殊なプレイをお願いすることはできますか"
+    },
+    {
+      "sequence": 35,
+      "level": 3,
+      "h3_id": "h2-06-h3-04",
+      "parent_h2_id": "h2-06",
+      "heading": "男性は顔出しをせずに利用できますか"
+    },
+    {
+      "sequence": 36,
+      "level": 3,
+      "h3_id": "h2-06-h3-05",
+      "parent_h2_id": "h2-06",
+      "heading": "利用中に身元が知られる危険はありますか"
+    },
+    {
+      "sequence": 37,
+      "level": 3,
+      "h3_id": "h2-06-h3-06",
+      "parent_h2_id": "h2-06",
+      "heading": "エロ通話アプリにサクラや業者はいますか"
+    },
+    {
+      "sequence": 38,
+      "level": 3,
+      "h3_id": "h2-06-h3-07",
+      "parent_h2_id": "h2-06",
+      "heading": "通話画面の録画やスクリーンショットは可能ですか"
+    },
+    {
+      "sequence": 39,
+      "level": 3,
+      "h3_id": "h2-06-h3-08",
+      "parent_h2_id": "h2-06",
+      "heading": "通話した女性と実際に会うことはできますか"
+    },
+    {
+      "sequence": 40,
+      "level": 3,
+      "h3_id": "h2-06-h3-09",
+      "parent_h2_id": "h2-06",
+      "heading": "エロ通話アプリは簡単に退会できますか"
+    },
+    {
+      "sequence": 41,
+      "level": 2,
+      "h2_id": "h2-07",
+      "parent_h2_id": null,
+      "heading": "エロ通話アプリのおすすめまとめ"
+    }
+  ],
+  "approved_headings_sha256": "f018e71498e3ef0e28135ddb837506fde02416a5107c9379ef0d2186be4392c1",
+  "ranking_methodology": {
+    "criteria": [
+      {
+        "name": "運営情報、年齢条件、安全対策の透明性",
+        "weight": 30
+      },
+      {
+        "name": "料金、ポイント換算、課金条件の透明性",
+        "weight": 25
+      },
+      {
+        "name": "対応機能の充実度",
+        "weight": 20
+      },
+      {
+        "name": "初回特典の条件と実用性",
+        "weight": 15
+      },
+      {
+        "name": "提供環境の利用しやすさ",
+        "weight": 10
+      }
+    ],
+    "ranking_consistent_with_evidence": true
+  },
+  "introduction": {
+    "target_characters": 1500,
+    "required_points": [
+      "成人向け注意",
+      "ランキング基準",
+      "公式確認日"
+    ]
+  },
+  "outline": [
+    {
+      "h2_id": "h2-01",
+      "heading": "エロ通話アプリおすすめ6選",
+      "search_intent_role": "比較判断に必要な情報を整理する",
+      "reader_question": "どのサービスをどう選べばよいか",
+      "answer_summary": "公式情報で確認できた範囲を中立的に比較する",
+      "target_characters": 12500,
+      "required_points": [
+        "料金、提供環境、年齢条件、公式情報確認日を明示",
+        "無料と有料の範囲を区別",
+        "規約違反や対面目的を推奨しない"
+      ],
+      "evidence_requirements": [
+        "公式サイト、料金案内、規約、特商法表記"
+      ],
+      "recommended_format": "mixed",
+      "table_plan": {
+        "required": true,
+        "purpose": "比較軸の統一",
+        "columns": [
+          "項目",
+          "確認ポイント",
+          "注意点"
+        ]
+      },
+      "h3": [
+        {
+          "h3_id": "h2-01-h3-01",
+          "heading": "おすすめ1位はVI-VO",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-01-h3-02",
+          "heading": "おすすめ2位はジュエルライブ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-01-h3-03",
+          "heading": "おすすめ3位はエンジェルライブ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-01-h3-04",
+          "heading": "おすすめ4位はマダムライブ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-01-h3-05",
+          "heading": "おすすめ5位はFANZAライブチャット",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-01-h3-06",
+          "heading": "おすすめ6位はライブでゴーゴー",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 1200,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        }
+      ]
+    },
+    {
+      "h2_id": "h2-02",
+      "heading": "エロ通話アプリの選び方",
+      "search_intent_role": "比較判断に必要な情報を整理する",
+      "reader_question": "どのサービスをどう選べばよいか",
+      "answer_summary": "公式情報で確認できた範囲を中立的に比較する",
+      "target_characters": 4200,
+      "required_points": [
+        "料金、提供環境、年齢条件、公式情報確認日を明示",
+        "無料と有料の範囲を区別",
+        "規約違反や対面目的を推奨しない"
+      ],
+      "evidence_requirements": [
+        "公式サイト、料金案内、規約、特商法表記"
+      ],
+      "recommended_format": "mixed",
+      "table_plan": {
+        "required": true,
+        "purpose": "比較軸の統一",
+        "columns": [
+          "項目",
+          "確認ポイント",
+          "注意点"
+        ]
+      },
+      "h3": [
+        {
+          "h3_id": "h2-02-h3-01",
+          "heading": "本人確認と運営会社の信頼性で選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-02-h3-02",
+          "heading": "通話料金とポイント換算率で選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-02-h3-03",
+          "heading": "初回無料ポイントの多さで選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-02-h3-04",
+          "heading": "登録している女性の人数で選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-02-h3-05",
+          "heading": "好みの女性ジャンルで選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-02-h3-06",
+          "heading": "割引キャンペーンの充実度で選ぶ",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        }
+      ]
+    },
+    {
+      "h2_id": "h2-03",
+      "heading": "エロ通話アプリとはどのようなサービスなのか",
+      "search_intent_role": "比較判断に必要な情報を整理する",
+      "reader_question": "どのサービスをどう選べばよいか",
+      "answer_summary": "公式情報で確認できた範囲を中立的に比較する",
+      "target_characters": 3000,
+      "required_points": [
+        "料金、提供環境、年齢条件、公式情報確認日を明示",
+        "無料と有料の範囲を区別",
+        "規約違反や対面目的を推奨しない"
+      ],
+      "evidence_requirements": [
+        "公式サイト、料金案内、規約、特商法表記"
+      ],
+      "recommended_format": "mixed",
+      "table_plan": {
+        "required": true,
+        "purpose": "比較軸の統一",
+        "columns": [
+          "項目",
+          "確認ポイント",
+          "注意点"
+        ]
+      },
+      "h3": [
+        {
+          "h3_id": "h2-03-h3-01",
+          "heading": "女性とリアルタイムで通話できる仕組み",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-03-h3-02",
+          "heading": "一般的なライブチャットとの違い",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-03-h3-03",
+          "heading": "出会い系アプリとの違い",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-03-h3-04",
+          "heading": "ポイント制を中心とした料金システム",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        }
+      ]
+    },
+    {
+      "h2_id": "h2-04",
+      "heading": "エロ通話アプリで楽しめること",
+      "search_intent_role": "比較判断に必要な情報を整理する",
+      "reader_question": "どのサービスをどう選べばよいか",
+      "answer_summary": "公式情報で確認できた範囲を中立的に比較する",
+      "target_characters": 4200,
+      "required_points": [
+        "料金、提供環境、年齢条件、公式情報確認日を明示",
+        "無料と有料の範囲を区別",
+        "規約違反や対面目的を推奨しない"
+      ],
+      "evidence_requirements": [
+        "公式サイト、料金案内、規約、特商法表記"
+      ],
+      "recommended_format": "mixed",
+      "table_plan": {
+        "required": true,
+        "purpose": "比較軸の統一",
+        "columns": [
+          "項目",
+          "確認ポイント",
+          "注意点"
+        ]
+      },
+      "h3": [
+        {
+          "h3_id": "h2-04-h3-01",
+          "heading": "二人きりのビデオ通話を楽しめる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-02",
+          "heading": "のぞきチャットで相手の映像を視聴できる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-03",
+          "heading": "遠隔操作に対応したおもちゃで遊べる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-04",
+          "heading": "映像を使わず音声通話を楽しめる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-05",
+          "heading": "テキストチャットで会話できる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-06",
+          "heading": "好みの女性を選んで通話できる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-04-h3-07",
+          "heading": "お気に入り登録した女性と継続的に交流できる",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        }
+      ]
+    },
+    {
+      "h2_id": "h2-05",
+      "heading": "エロ通話アプリを無料ポイントで楽しむ方法",
+      "search_intent_role": "比較判断に必要な情報を整理する",
+      "reader_question": "どのサービスをどう選べばよいか",
+      "answer_summary": "公式情報で確認できた範囲を中立的に比較する",
+      "target_characters": 2100,
+      "required_points": [
+        "料金、提供環境、年齢条件、公式情報確認日を明示",
+        "無料と有料の範囲を区別",
+        "規約違反や対面目的を推奨しない"
+      ],
+      "evidence_requirements": [
+        "公式サイト、料金案内、規約、特商法表記"
+      ],
+      "recommended_format": "mixed",
+      "table_plan": {
+        "required": true,
+        "purpose": "比較軸の統一",
+        "columns": [
+          "項目",
+          "確認ポイント",
+          "注意点"
+        ]
+      },
+      "h3": [
+        {
+          "h3_id": "h2-05-h3-01",
+          "heading": "複数のエロ通話アプリで初回無料ポイントを試す",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        },
+        {
+          "h3_id": "h2-05-h3-02",
+          "heading": "のぞき機能で相手の雰囲気を確認する",
+          "purpose": "該当論点を具体化する",
+          "target_characters": 520,
+          "required_points": [
+            "結論",
+            "公式確認できた事実",
+            "利用前の注意点"
+          ],
+          "evidence_requirements": [
+            "公式情報または公的情報"
+          ]
+        }
+      ]
+    }
+  ],
+  "faq": {
+    "h2_id": "h2-06",
+    "heading": "エロ通話アプリに関するよくある質問",
+    "target_characters": 2500,
+    "questions": [
+      {
+        "h3_id": "h2-06-h3-01",
+        "question": "エロ通話アプリは完全無料で利用できますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-02",
+        "question": "女性はどこまでリクエストに対応してくれますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-03",
+        "question": "特殊なプレイをお願いすることはできますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-04",
+        "question": "男性は顔出しをせずに利用できますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-05",
+        "question": "利用中に身元が知られる危険はありますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-06",
+        "question": "エロ通話アプリにサクラや業者はいますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-07",
+        "question": "通話画面の録画やスクリーンショットは可能ですか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-08",
+        "question": "通話した女性と実際に会うことはできますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      },
+      {
+        "h3_id": "h2-06-h3-09",
+        "question": "エロ通話アプリは簡単に退会できますか",
+        "answer_requirements": [
+          "短い結論",
+          "条件と注意点",
+          "規約確認の必要性"
+        ],
+        "reason_for_inclusion": "検索後に残る疑問へ回答",
+        "non_duplication_note": "本文の要点をFAQ用に圧縮"
+      }
+    ]
+  },
+  "conclusion": {
+    "h2_id": "h2-07",
+    "heading": "エロ通話アプリのおすすめまとめ",
+    "target_characters": 2000,
+    "required_points": [
+      "比較軸の再提示",
+      "無料ポイントは条件確認",
+      "対面目的ではない注意"
+    ]
+  },
+  "cta_plan": [],
+  "service_verification": [
+    {
+      "service_name": "VI-VO",
+      "official_url": "https://vi-vo.link/",
+      "operator_name": "株式会社エムモバ",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://vi-vo.link/",
+      "terms_url": "https://vi-vo.link/",
+      "privacy_url": "https://vi-vo.link/",
+      "age_requirement": "18歳以上・高校生不可の案内を確認",
+      "pricing": {
+        "summary": "ビデオ通話は230pt/分前後、購入条件により円換算が変わるため公式表示を確認"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    },
+    {
+      "service_name": "ジュエルライブ",
+      "official_url": "https://www.j-live.tv/",
+      "operator_name": "株式会社エムライブ",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://www.j-live.tv/",
+      "terms_url": "https://www.j-live.tv/",
+      "privacy_url": "https://www.j-live.tv/",
+      "age_requirement": "18歳以上向け",
+      "pricing": {
+        "summary": "パーティ、2ショット、双方向など機能別に分単位課金"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    },
+    {
+      "service_name": "エンジェルライブ",
+      "official_url": "https://www.angel-live.com/",
+      "operator_name": "株式会社リアズ",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://www.angel-live.com/",
+      "terms_url": "https://www.angel-live.com/",
+      "privacy_url": "https://www.angel-live.com/",
+      "age_requirement": "18歳以上向け",
+      "pricing": {
+        "summary": "機能別の分単位ポイント制。購入額と消費ptで実質額を確認"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    },
+    {
+      "service_name": "マダムライブ",
+      "official_url": "https://www.madamlive.tv/",
+      "operator_name": "株式会社エムライブ",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://www.madamlive.tv/",
+      "terms_url": "https://www.madamlive.tv/",
+      "privacy_url": "https://www.madamlive.tv/",
+      "age_requirement": "18歳以上向け",
+      "pricing": {
+        "summary": "大人世代向けライブチャット。機能別に分単位課金"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    },
+    {
+      "service_name": "FANZAライブチャット",
+      "official_url": "https://www.dmm.co.jp/live/chat/",
+      "operator_name": "合同会社DMM.com",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://www.dmm.co.jp/live/chat/",
+      "terms_url": "https://www.dmm.co.jp/live/chat/",
+      "privacy_url": "https://www.dmm.co.jp/live/chat/",
+      "age_requirement": "18歳以上向け",
+      "pricing": {
+        "summary": "DMMポイント等で支払い。番組・機能により料金が異なる"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    },
+    {
+      "service_name": "ライブでゴーゴー",
+      "official_url": "https://livede55.com/",
+      "operator_name": "株式会社ハイスペック",
+      "availability_status": "active",
+      "new_registration_status": "available",
+      "delivery_types": [
+        "web"
+      ],
+      "pricing_url": "https://livede55.com/",
+      "terms_url": "https://livede55.com/",
+      "privacy_url": "https://livede55.com/",
+      "age_requirement": "18歳以上向け",
+      "pricing": {
+        "summary": "ノンアダルト系。ポイント制で機能別に消費"
+      },
+      "initial_offer": {
+        "summary": "公式表示の有無と条件を利用前に確認",
+        "eligibility": "新規登録者等",
+        "expiration": "キャンペーンにより変動"
+      },
+      "payment_methods": [
+        "クレジットカード等。公式決済画面で確認"
+      ],
+      "account_withdrawal_method": "マイページまたは問い合わせで確認",
+      "official_information_gaps": [
+        "一部料金・退会詳細はログイン後表示の場合あり"
+      ],
+      "fact_check_status": "PASS",
+      "checked_at": "2026-07-24"
+    }
+  ],
+  "source_plan": [
+    {
+      "source_name": "VI-VO公式",
+      "source_type": "service_official",
+      "url": "https://vi-vo.link/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "VI-VO"
+      ]
+    },
+    {
+      "source_name": "ジュエルライブ公式",
+      "source_type": "service_official",
+      "url": "https://www.j-live.tv/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "ジュエルライブ"
+      ]
+    },
+    {
+      "source_name": "エンジェルライブ公式",
+      "source_type": "service_official",
+      "url": "https://www.angel-live.com/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "エンジェルライブ"
+      ]
+    },
+    {
+      "source_name": "マダムライブ公式",
+      "source_type": "service_official",
+      "url": "https://www.madamlive.tv/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "マダムライブ"
+      ]
+    },
+    {
+      "source_name": "FANZAライブチャット公式",
+      "source_type": "service_official",
+      "url": "https://www.dmm.co.jp/live/chat/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "FANZAライブチャット"
+      ]
+    },
+    {
+      "source_name": "ライブでゴーゴー公式",
+      "source_type": "service_official",
+      "url": "https://livede55.com/",
+      "checked_at": "2026-07-24",
+      "dynamic_information": true,
+      "supports": [
+        "ライブでゴーゴー"
+      ]
+    }
+  ],
+  "internal_link_topics": [],
+  "prohibited_or_excluded_topics": [
+    "対面利用の推奨",
+    "無断録画の方法",
+    "年齢確認回避"
+  ],
+  "character_budget_check": {
+    "calculated_total": 30000,
+    "matches_target": true
+  },
+  "outline_quality_check": {
+    "primary_intent_covered": true,
+    "headings_are_non_overlapping": true,
+    "h2_h3_relationships_are_valid": true,
+    "faq_is_non_duplicative": true,
+    "unverified_claim_dependent_headings_absent": true,
+    "all_services_verified": true,
+    "pricing_units_are_clear": true,
+    "ranking_methodology_is_supported": true,
+    "adult_only_policy_is_satisfied": true
+  },
+  "headings": [
+    {
+      "level": 2,
+      "text": "エロ通話アプリおすすめ6選"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ1位はVI-VO"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ2位はジュエルライブ"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ3位はエンジェルライブ"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ4位はマダムライブ"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ5位はFANZAライブチャット"
+    },
+    {
+      "level": 3,
+      "text": "おすすめ6位はライブでゴーゴー"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリの選び方"
+    },
+    {
+      "level": 3,
+      "text": "本人確認と運営会社の信頼性で選ぶ"
+    },
+    {
+      "level": 3,
+      "text": "通話料金とポイント換算率で選ぶ"
+    },
+    {
+      "level": 3,
+      "text": "初回無料ポイントの多さで選ぶ"
+    },
+    {
+      "level": 3,
+      "text": "登録している女性の人数で選ぶ"
+    },
+    {
+      "level": 3,
+      "text": "好みの女性ジャンルで選ぶ"
+    },
+    {
+      "level": 3,
+      "text": "割引キャンペーンの充実度で選ぶ"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリとはどのようなサービスなのか"
+    },
+    {
+      "level": 3,
+      "text": "女性とリアルタイムで通話できる仕組み"
+    },
+    {
+      "level": 3,
+      "text": "一般的なライブチャットとの違い"
+    },
+    {
+      "level": 3,
+      "text": "出会い系アプリとの違い"
+    },
+    {
+      "level": 3,
+      "text": "ポイント制を中心とした料金システム"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリで楽しめること"
+    },
+    {
+      "level": 3,
+      "text": "二人きりのビデオ通話を楽しめる"
+    },
+    {
+      "level": 3,
+      "text": "のぞきチャットで相手の映像を視聴できる"
+    },
+    {
+      "level": 3,
+      "text": "遠隔操作に対応したおもちゃで遊べる"
+    },
+    {
+      "level": 3,
+      "text": "映像を使わず音声通話を楽しめる"
+    },
+    {
+      "level": 3,
+      "text": "テキストチャットで会話できる"
+    },
+    {
+      "level": 3,
+      "text": "好みの女性を選んで通話できる"
+    },
+    {
+      "level": 3,
+      "text": "お気に入り登録した女性と継続的に交流できる"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリを無料ポイントで楽しむ方法"
+    },
+    {
+      "level": 3,
+      "text": "複数のエロ通話アプリで初回無料ポイントを試す"
+    },
+    {
+      "level": 3,
+      "text": "のぞき機能で相手の雰囲気を確認する"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリに関するよくある質問"
+    },
+    {
+      "level": 3,
+      "text": "エロ通話アプリは完全無料で利用できますか"
+    },
+    {
+      "level": 3,
+      "text": "女性はどこまでリクエストに対応してくれますか"
+    },
+    {
+      "level": 3,
+      "text": "特殊なプレイをお願いすることはできますか"
+    },
+    {
+      "level": 3,
+      "text": "男性は顔出しをせずに利用できますか"
+    },
+    {
+      "level": 3,
+      "text": "利用中に身元が知られる危険はありますか"
+    },
+    {
+      "level": 3,
+      "text": "エロ通話アプリにサクラや業者はいますか"
+    },
+    {
+      "level": 3,
+      "text": "通話画面の録画やスクリーンショットは可能ですか"
+    },
+    {
+      "level": 3,
+      "text": "通話した女性と実際に会うことはできますか"
+    },
+    {
+      "level": 3,
+      "text": "エロ通話アプリは簡単に退会できますか"
+    },
+    {
+      "level": 2,
+      "text": "エロ通話アプリのおすすめまとめ"
+    }
+  ]
+}

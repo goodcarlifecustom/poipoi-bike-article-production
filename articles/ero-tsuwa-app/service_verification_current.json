@@ -1,0 +1,188 @@
+[
+  {
+    "service_name": "VI-VO",
+    "official_url": "https://vi-vo.link/",
+    "operator_name": "株式会社エムモバ",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://vi-vo.link/",
+    "terms_url": "https://vi-vo.link/",
+    "privacy_url": "https://vi-vo.link/",
+    "age_requirement": "18歳以上・高校生不可の案内を確認",
+    "pricing": {
+      "summary": "ビデオ通話は230pt/分前後、購入条件により円換算が変わるため公式表示を確認"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  },
+  {
+    "service_name": "ジュエルライブ",
+    "official_url": "https://www.j-live.tv/",
+    "operator_name": "株式会社エムライブ",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://www.j-live.tv/",
+    "terms_url": "https://www.j-live.tv/",
+    "privacy_url": "https://www.j-live.tv/",
+    "age_requirement": "18歳以上向け",
+    "pricing": {
+      "summary": "パーティ、2ショット、双方向など機能別に分単位課金"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  },
+  {
+    "service_name": "エンジェルライブ",
+    "official_url": "https://www.angel-live.com/",
+    "operator_name": "株式会社リアズ",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://www.angel-live.com/",
+    "terms_url": "https://www.angel-live.com/",
+    "privacy_url": "https://www.angel-live.com/",
+    "age_requirement": "18歳以上向け",
+    "pricing": {
+      "summary": "機能別の分単位ポイント制。購入額と消費ptで実質額を確認"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  },
+  {
+    "service_name": "マダムライブ",
+    "official_url": "https://www.madamlive.tv/",
+    "operator_name": "株式会社エムライブ",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://www.madamlive.tv/",
+    "terms_url": "https://www.madamlive.tv/",
+    "privacy_url": "https://www.madamlive.tv/",
+    "age_requirement": "18歳以上向け",
+    "pricing": {
+      "summary": "大人世代向けライブチャット。機能別に分単位課金"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  },
+  {
+    "service_name": "FANZAライブチャット",
+    "official_url": "https://www.dmm.co.jp/live/chat/",
+    "operator_name": "合同会社DMM.com",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://www.dmm.co.jp/live/chat/",
+    "terms_url": "https://www.dmm.co.jp/live/chat/",
+    "privacy_url": "https://www.dmm.co.jp/live/chat/",
+    "age_requirement": "18歳以上向け",
+    "pricing": {
+      "summary": "DMMポイント等で支払い。番組・機能により料金が異なる"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  },
+  {
+    "service_name": "ライブでゴーゴー",
+    "official_url": "https://livede55.com/",
+    "operator_name": "株式会社ハイスペック",
+    "availability_status": "active",
+    "new_registration_status": "available",
+    "delivery_types": [
+      "web"
+    ],
+    "pricing_url": "https://livede55.com/",
+    "terms_url": "https://livede55.com/",
+    "privacy_url": "https://livede55.com/",
+    "age_requirement": "18歳以上向け",
+    "pricing": {
+      "summary": "ノンアダルト系。ポイント制で機能別に消費"
+    },
+    "initial_offer": {
+      "summary": "公式表示の有無と条件を利用前に確認",
+      "eligibility": "新規登録者等",
+      "expiration": "キャンペーンにより変動"
+    },
+    "payment_methods": [
+      "クレジットカード等。公式決済画面で確認"
+    ],
+    "account_withdrawal_method": "マイページまたは問い合わせで確認",
+    "official_information_gaps": [
+      "一部料金・退会詳細はログイン後表示の場合あり"
+    ],
+    "fact_check_status": "PASS",
+    "checked_at": "2026-07-24"
+  }
+]
